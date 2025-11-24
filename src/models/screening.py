@@ -10,7 +10,7 @@ from lightgbm import LGBMClassifier
 import optuna
 
 
-def load_splits(split_mode, base_dir="dataset/splits"):
+def load_splits(split_mode, base_dir="..\dataset\splits"):
     """
     Load precomputed splits from JSON file.
 
