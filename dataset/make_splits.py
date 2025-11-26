@@ -16,7 +16,7 @@ from data.split import (
 # ======================================================
 # CONFIG
 # ======================================================
-DATASET_PATH = os.path.join(os.path.dirname(__file__), "AptaBench_dataset.csv")
+DATASET_PATH = os.path.join(os.path.dirname(__file__), "AptaBench_dataset_v2.csv")
 N_SPLITS = 5
 RANDOM_STATE = 42
 
