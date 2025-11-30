@@ -109,7 +109,7 @@ def dnabert2_embed(
     model = AutoModel.from_pretrained(
         model_name,
         trust_remote_code=True,
-        use_safetensors=True
+        use_safetensors=False
     ).to(device)
     model.eval()
 

@@ -1,3 +1,4 @@
+import types
 import numpy as np
 import torch
 from rdkit import Chem, DataStructs
@@ -5,9 +6,12 @@ from rdkit.Chem import Descriptors, rdFingerprintGenerator as rfg, MACCSkeys
 from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
 from transformers import AutoTokenizer, AutoModel
 from unimol_tools import UniMolRepr
+import clamp
+from mhnreact.molutils import convert_smiles_to_fp
 
 
-def morgan_fp(smiles_list, n_bits=2048, radius=2, counts=False):
+
+def morgan_fp(smiles_list, n_bits=1024, radius=2, counts=False):
     X = np.zeros((len(smiles_list), n_bits), dtype=np.int32 if counts else np.uint8)
     gen = rfg.GetMorganGenerator(radius=radius, fpSize=n_bits)
     for i, smi in enumerate(smiles_list):
@@ -98,6 +102,12 @@ def molformer_embed(smiles_list, model_name="ibm/MoLFormer-XL-both-10pct",
     model = AutoModel.from_pretrained(model_name,
                                       deterministic_eval=True,
                                       trust_remote_code=True).to(device)
+    if not hasattr(model, "warn_if_padding_and_no_attention_mask"):
+        def _warn_if_padding_and_no_attention_mask(self, input_ids, attention_mask):
+            return
+        model.warn_if_padding_and_no_attention_mask = types.MethodType(
+            _warn_if_padding_and_no_attention_mask, model
+        )
     model.eval()
     out = []
     for i in range(0, len(smiles_list), batch_size):
@@ -107,4 +117,36 @@ def molformer_embed(smiles_list, model_name="ibm/MoLFormer-XL-both-10pct",
         outputs = model(**inputs)
         pooled = outputs.pooler_output.detach().cpu().numpy()
         out.append(pooled)
+    return np.vstack(out)
+
+
+@torch.no_grad()
+def clamp_embed(smiles_list, batch_size=64, device=None):
+    device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+
+    model = clamp.CLAMP(device=device)
+    model.to(device)
+    model.eval()
+
+    out = []
+
+    for i in range(0, len(smiles_list), batch_size):
+        batch = [s if s is not None else "" for s in smiles_list[i:i+batch_size]]
+
+        # --- 1) FINGERPRINTS ВСЕГДА CPU ---
+        fp = convert_smiles_to_fp(
+            batch,
+            which=model.hparams["compound_mode"],
+            fp_size=model.compound_features_size,
+            njobs=1
+        ).astype(np.float32)
+
+        # --- 2) ПЕРЕНОС НА GPU ---
+        fp = torch.tensor(fp, dtype=torch.float32, device=device)
+
+        # --- 3) ВЫЗЫВАТЬ ТОЛЬКО encoder, НЕ encode_smiles ---
+        embeddings = model.compound_encoder(fp)
+
+        out.append(embeddings.detach().cpu().numpy())
+
     return np.vstack(out)

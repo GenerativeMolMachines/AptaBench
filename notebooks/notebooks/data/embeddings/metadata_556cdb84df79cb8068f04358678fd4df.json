@@ -1,0 +1,22 @@
+{
+  "dataset_hash": "556cdb84df79cb8068f04358678fd4df",
+  "dataset_shape": [
+    6413,
+    8
+  ],
+  "aptamer_encoders": [
+    "OneHot",
+    "Kmer3",
+    "Kmer4",
+    "DNABERT2"
+  ],
+  "molecule_encoders": [
+    "MorganFP",
+    "MACCS",
+    "PhysChem",
+    "ChemBERTa",
+    "UniMol",
+    "MolFormer",
+    "CLAMP"
+  ]
+}
