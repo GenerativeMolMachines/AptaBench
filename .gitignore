@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Large model files and checkpoints
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.h5
+*.hdf5
+*.pb
+*.onnx
+*.pkl.gz
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Large data files
+*.csv.gz
+*.parquet.gz
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Checkpoints and model files
+notebooks/data/models/**/*.pt
+notebooks/data/models/**/*.pth
+notebooks/notebooks/checkpoints/*.db
+notebooks/notebooks/checkpoints/*.pt
+notebooks/notebooks/checkpoints/*.pth
+
