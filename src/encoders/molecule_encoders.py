@@ -133,7 +133,6 @@ def clamp_embed(smiles_list, batch_size=64, device=None):
     for i in range(0, len(smiles_list), batch_size):
         batch = [s if s is not None else "" for s in smiles_list[i:i+batch_size]]
 
-        # --- 1) FINGERPRINTS ВСЕГДА CPU ---
         fp = convert_smiles_to_fp(
             batch,
             which=model.hparams["compound_mode"],
@@ -141,10 +140,8 @@ def clamp_embed(smiles_list, batch_size=64, device=None):
             njobs=1
         ).astype(np.float32)
 
-        # --- 2) ПЕРЕНОС НА GPU ---
         fp = torch.tensor(fp, dtype=torch.float32, device=device)
 
-        # --- 3) ВЫЗЫВАТЬ ТОЛЬКО encoder, НЕ encode_smiles ---
         embeddings = model.compound_encoder(fp)
 
         out.append(embeddings.detach().cpu().numpy())

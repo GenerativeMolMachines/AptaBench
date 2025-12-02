@@ -121,7 +121,7 @@ def compute_intersections(dataset_dict):
 
 
 def _compute_scaffold(smiles: str):
-    """Bemis–Murcko scaffold для одного лиганда."""
+    """Compute Bemis-Murcko scaffold for a molecule."""
     try:
         mol = Chem.MolFromSmiles(smiles)
         if mol is None:
@@ -133,7 +133,7 @@ def _compute_scaffold(smiles: str):
 
 
 def _seq_identity(a: str, b: str) -> float:
-    """Процент идентичности (0–1) через SequenceMatcher (дешёво и без зависимостей)."""
+    """Sequence identity (0-1) using SequenceMatcher."""
     return SequenceMatcher(None, a, b).ratio()
 
 
@@ -147,13 +147,8 @@ def analyze_generalization_splits(
     max_train_seqs_for_similarity=2000,
 ):
     """
-    Отличие от прошлой версии:
-    ---------------------------
-    Анализируется КАЖДЫЙ ФОЛД внутри каждого split_mode.
-    То есть вместо 3 строк (по 1 на split) будет 15 строк (3 split × 5 fold).
-    
-    Это корректно, потому что leakage может быть в одном фолде,
-    а в другом отсутствовать.
+    Analyze each fold within each split_mode.
+    Returns 15 rows (3 splits × 5 folds) instead of 3.
     """
     df = df.reset_index(drop=True)
 
@@ -167,7 +162,7 @@ def analyze_generalization_splits(
             train = df.iloc[train_idx].copy()
             test = df.iloc[test_idx].copy()
 
-            # --- 1. Дубликаты ---
+            
             train_pairs = list(zip(train[sequence_col], train[smiles_col]))
             test_pairs = list(zip(test[sequence_col], test[smiles_col]))
 
@@ -180,7 +175,7 @@ def analyze_generalization_splits(
             train_smiles_dups = train[smiles_col].duplicated().sum()
             test_smiles_dups = test[smiles_col].duplicated().sum()
 
-            # --- 2. Пересечения train/test ---
+            
             shared_pairs = set(train_pairs).intersection(set(test_pairs))
             shared_seqs = set(train[sequence_col]).intersection(set(test[sequence_col]))
             shared_smiles = set(train[smiles_col]).intersection(set(test[smiles_col]))
@@ -217,19 +212,19 @@ def analyze_generalization_splits(
                 {
                     "split": split_mode,
                     "fold": fold_id,
-                    # размеры
+                    
                     "n_train_pairs": len(train),
                     "n_test_pairs": len(test),
                     "n_unique_train_pairs": len(set(train_pairs)),
                     "n_unique_test_pairs": len(set(test_pairs)),
-                    # дубликаты
+                    
                     "train_pair_duplicates": train_pair_dups,
                     "test_pair_duplicates": test_pair_dups,
                     "train_seq_duplicates": int(train_seq_dups),
                     "test_seq_duplicates": int(test_seq_dups),
                     "train_smiles_duplicates": int(train_smiles_dups),
                     "test_smiles_duplicates": int(test_smiles_dups),
-                    # пересечения train/test
+                    
                     "shared_pairs": len(shared_pairs),
                     "shared_seqs": len(shared_seqs),
                     "shared_smiles": len(shared_smiles),

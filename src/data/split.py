@@ -7,7 +7,7 @@ from rdkit.Chem.Scaffolds import MurckoScaffold
 
 
 # ===========================
-# ВНУТРЕННИЕ ВСПОМОГАТЕЛЬНЫЕ
+# Internal utilities
 # ===========================
 
 def _seq_identity(a, b):
@@ -27,22 +27,19 @@ def _get_scaffold(smiles):
 
 def _cluster_sequences(seqs, threshold=0.8):
     """
-    Кластеризация последовательностей по sequence identity >= threshold,
-    с учётом транзитивности (A~B и B~C => A,B,C в одном кластере).
-    Использует поиск компонент связности в графе схожести.
+    Cluster sequences by identity >= threshold with transitivity.
+    Uses connected components in similarity graph.
     """
 
     n = len(seqs)
     adj = [[] for _ in range(n)]
 
-    # строим граф: ребро между seq[i] и seq[j], если они >= threshold
     for i in range(n):
         for j in range(i + 1, n):
             if _seq_identity(seqs[i], seqs[j]) >= threshold:
                 adj[i].append(j)
                 adj[j].append(i)
 
-    # находим компоненты связности (DFS)
     visited = [False] * n
     groups = [-1] * n
     cluster_id = 0
@@ -67,9 +64,7 @@ def _cluster_sequences(seqs, threshold=0.8):
 
 
 def _cluster_scaffolds(scaffolds):
-    """
-    Каждому уникальному scaffold присвоить cluster_id.
-    """
+    """Assign cluster_id to each unique scaffold."""
     uniq = {sc: i for i, sc in enumerate(pd.Series(scaffolds).dropna().unique())}
     return np.array([uniq.get(sc, -1) for sc in scaffolds])
 
@@ -114,7 +109,7 @@ def stratified_group_splits(
 
 
 # ==============================================================
-#   2) STRICT DISJOINT APTAMER SPLITS (по кластерам seq)
+# 2) STRICT DISJOINT APTAMER SPLITS
 # ==============================================================
 
 def disjoint_aptamer_splits(
@@ -125,10 +120,7 @@ def disjoint_aptamer_splits(
     random_state=42,
     seq_similarity_threshold=0.8
 ):
-    """
-    Теперь sequence-группы = sequence-similarity кластеры,
-    а не просто уникальные строки.
-    """
+    """Sequence groups are sequence-similarity clusters."""
 
     unique_seqs = df[col].astype(str).drop_duplicates().tolist()
     unique_clusters = _cluster_sequences(unique_seqs)
@@ -145,7 +137,7 @@ def disjoint_aptamer_splits(
 
 
 # ==============================================================
-#   3) STRICT DISJOINT MOLECULE SPLITS (по scaffold)
+# 3) STRICT DISJOINT MOLECULE SPLITS
 # ==============================================================
 
 def disjoint_molecule_splits(
@@ -155,10 +147,7 @@ def disjoint_molecule_splits(
     label_col="label",
     random_state=42
 ):
-    """
-    Теперь molecule-группы = scaffold-кластеры,
-    а не просто SMILES-строки.
-    """
+    """Molecule groups are scaffold clusters."""
 
     smiles = df[col].astype(str).tolist()
     scaffolds = [_get_scaffold(smi) for smi in smiles]

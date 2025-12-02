@@ -237,10 +237,10 @@ def screen_lgbm_optuna(
     use_cached_embeddings=True,
     embeddings_dir="notebooks/data/embeddings",
     force_recompute_embeddings=False,
-    checkpoint_dir="notebooks/checkpoints",  # Директория для чекпоинтов
-    results_file=None,  # Файл для онлайн сохранения результатов
-    resume=True,  # Продолжить с чекпоинта если есть
-    use_pruning=True,  # Использовать pruning для ускорения
+    checkpoint_dir="notebooks/checkpoints",
+    results_file=None,
+    resume=True,
+    use_pruning=True
 ):
     """
     Run LightGBM screening with Optuna hyperparameter optimization,
@@ -292,49 +292,42 @@ def screen_lgbm_optuna(
     df = df.reset_index(drop=True)
     y = df["label"].astype(int).to_numpy()
     
-    # Вычисляем dataset_hash один раз
     dataset_hash = _compute_dataset_hash(df)
     cache_dir = _get_embedding_cache_dir(embeddings_dir)
     
-    # Создаем директорию для чекпоинтов
     checkpoint_path = Path(checkpoint_dir)
     checkpoint_path.mkdir(parents=True, exist_ok=True)
     
-    # Файл для сохранения прогресса
     if results_file is None:
         results_file = checkpoint_path / "results_incremental.csv"
     else:
         results_file = Path(results_file)
     
-    # Загружаем существующие результаты если есть
     completed_combinations = set()
     records = []
     if resume and results_file.exists():
         try:
             existing_df = pd.read_csv(results_file)
             records = existing_df.to_dict('records')
-            # Создаем множество выполненных комбинаций
             for row in records:
                 key = (row['split'], row['aptamer_encoder'], row['molecule_encoder'])
                 completed_combinations.add(key)
-            print(f"✓ Загружено {len(records)} существующих результатов. Продолжаем с {len(completed_combinations)} комбинаций.")
+            print(f"✓ Loaded {len(records)} existing results. Continuing with {len(completed_combinations)} combinations.")
         except Exception as e:
-            print(f"⚠ Ошибка загрузки чекпоинта: {e}. Начинаем заново.")
+            print(f"⚠ Checkpoint loading error: {e}. Starting fresh.")
             records = []
             completed_combinations = set()
 
-    # --- loop over splits / encoders ---
-    # ОПТИМИЗАЦИЯ: Загружаем эмбеддинги по требованию, а не все сразу
+    #
     for split_mode in split_modes:
         splits = load_splits(split_mode, base_dir=splits_dir)
 
         for apt_cfg in tqdm(apt_cfgs, desc=f"Apt encoders ({split_mode})"):
             a_name = apt_cfg["name"]
             
-            # Загружаем только нужный aptamer эмбеддинг
             cache_file_apt = cache_dir / f"apt_{a_name}_{dataset_hash}.npy"
             if cache_file_apt.exists():
-                Xa = np.load(cache_file_apt).astype(np.float32)  # float32 для экономии памяти
+                Xa = np.load(cache_file_apt).astype(np.float32)
             else:
                 if use_cached_embeddings:
                     print(f"⚠ Cache miss for {a_name}, skipping...")
@@ -345,10 +338,9 @@ def screen_lgbm_optuna(
             for mol_cfg in mol_cfgs:
                 m_name = mol_cfg["name"]
                 
-                # Загружаем только нужный molecule эмбеддинг
                 cache_file_mol = cache_dir / f"mol_{m_name}_{dataset_hash}.npy"
                 if cache_file_mol.exists():
-                    Xm = np.load(cache_file_mol).astype(np.float32)  # float32 для экономии памяти
+                    Xm = np.load(cache_file_mol).astype(np.float32)
                 else:
                     if use_cached_embeddings:
                         print(f"⚠ Cache miss for {m_name}, skipping...")
@@ -356,33 +348,28 @@ def screen_lgbm_optuna(
                     Xm = mol_cfg["func"](df["canonical_smiles"].tolist(), **mol_cfg.get("kwargs", {})).astype(np.float32)
                     np.save(cache_file_mol, Xm)
                 
-                # Объединяем эмбеддинги
                 X = np.concatenate([Xa, Xm], axis=1).astype(np.float32)
                 
-                # Проверяем, не выполнена ли уже эта комбинация
                 combo_key = (split_mode, a_name, m_name)
                 if resume and combo_key in completed_combinations:
-                    print(f"  ⏭ Пропускаем {a_name} × {m_name} (уже выполнено)")
+                    print(f"  ⏭ Skipping {a_name} × {m_name} (already done)")
                     continue
 
-                # Создаем уникальный идентификатор для Optuna study (для чекпоинтов)
                 study_name = f"{split_mode}_{a_name}_{m_name}_{dataset_hash}"
                 study_db = checkpoint_path / f"{study_name}.db"
                 
                 def objective(trial):
-                    # УМЕНЬШЕННЫЕ диапазоны для ускорения поиска
                     params = {
-                        "n_estimators": trial.suggest_int("n_estimators", 200, 800),  # Уменьшено с 1000
-                        "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.15, log=True),  # Уменьшено с 0.2
-                        "num_leaves": trial.suggest_int("num_leaves", 16, 128),  # Уменьшено с 256
-                        "max_depth": trial.suggest_int("max_depth", -1, 15),  # Уменьшено с 20
-                        "subsample": trial.suggest_float("subsample", 0.6, 1.0),  # Уменьшено с 0.5
-                        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.6, 1.0),  # Уменьшено с 0.5
-                        "reg_lambda": trial.suggest_float("reg_lambda", 1e-3, 5.0, log=True),  # Уменьшено с 10.0
+                        "n_estimators": trial.suggest_int("n_estimators", 200, 800),
+                        "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.15, log=True),
+                        "num_leaves": trial.suggest_int("num_leaves", 16, 128),
+                        "max_depth": trial.suggest_int("max_depth", -1, 15),
+                        "subsample": trial.suggest_float("subsample", 0.6, 1.0),
+                        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.6, 1.0),
+                        "reg_lambda": trial.suggest_float("reg_lambda", 1e-3, 5.0, log=True),
                     }
 
                     scores = []
-                    # Используем все folds для оценки
                     for fold_idx, (tr, va) in enumerate(splits):
                         Xtr, Xva, ytr, yva = X[tr], X[va], y[tr], y[va]
 
@@ -394,12 +381,11 @@ def screen_lgbm_optuna(
                         clf = LGBMClassifier(
                             **params,
                             random_state=random_state,
-                            n_jobs=2,  # 2 потока для баланса скорости и памяти
+                            n_jobs=2,
                             verbosity=-1,
                         )
                         with warnings.catch_warnings():
                             warnings.filterwarnings("ignore", message="X does not have valid feature names.*")
-                            # Early stopping для ускорения
                             if use_pruning:
                                 clf.fit(
                                     Xtr, ytr,
@@ -418,52 +404,45 @@ def screen_lgbm_optuna(
 
                         scores.append(roc if metric == "roc_auc" else mcc)
                         
-                        # Pruning: прекращаем trial если он плохой
                         if use_pruning and len(scores) >= 2:
                             trial.report(np.nanmean(scores), step=fold_idx)
                             if trial.should_prune():
                                 raise optuna.TrialPruned()
                     
-                    # Очистка памяти после каждого fold
                     del clf, scaler, s, yhat, roc, mcc
 
                     return np.nanmean(scores)
 
-                # --- run Optuna с чекпоинтами ---
-                # Используем SQLite storage для возможности перезапуска
                 storage_url = f"sqlite:///{study_db}"
                 
-                # Пытаемся загрузить существующий study или создаем новый
                 pruner = optuna.pruners.MedianPruner(n_startup_trials=2, n_warmup_steps=1) if use_pruning else None
                 try:
                     study = optuna.load_study(study_name=study_name, storage=storage_url)
                     n_completed = len([t for t in study.trials if t.state == optuna.trial.TrialState.COMPLETE])
                     if n_completed > 0:
-                        print(f"  ↻ Продолжаем study: {n_completed}/{n_trials} trials выполнено")
+                        print(f"  ↻ Continuing study: {n_completed}/{n_trials} trials done")
                 except:
-                    # Создаем новый study
                     study = optuna.create_study(
                         study_name=study_name,
                         storage=storage_url,
                         direction="maximize",
                         pruner=pruner,
-                        sampler=optuna.samplers.TPESampler(seed=random_state),  # TPE быстрее чем Random
+                        sampler=optuna.samplers.TPESampler(seed=random_state),
                         load_if_exists=True
                     )
                     n_completed = 0
                 
-                # Очистка памяти после каждого trial
                 remaining_trials = max(0, n_trials - n_completed)
                 if remaining_trials > 0:
                     study.optimize(
                         objective, 
                         n_trials=remaining_trials, 
                         show_progress_bar=False,
-                        gc_after_trial=True  # Включить автоматическую очистку памяти
+                        gc_after_trial=True
                     )
                 
                 best_params = study.best_params
-                del study  # Освобождаем study сразу после использования
+                del study
 
                 # --- evaluate best params ---
                 roc_scores, mcc_scores = [], []
@@ -478,7 +457,7 @@ def screen_lgbm_optuna(
                     clf = LGBMClassifier(
                         **best_params,
                         random_state=random_state,
-                        n_jobs=2,  # 2 потока для баланса
+                        n_jobs=2,
                         verbosity=-1,
                     )
                     clf.fit(Xtr, ytr)
@@ -500,20 +479,17 @@ def screen_lgbm_optuna(
                     "ROC-AUC std": np.nanstd(roc_scores),
                     "MCC mean": np.nanmean(mcc_scores),
                     "MCC std": np.nanstd(mcc_scores),
-                    "best_params": str(best_params),  # Сохраняем как строку для CSV
+                    "best_params": str(best_params),
                 }
                 records.append(new_record)
                 
-                # ОНЛАЙН СОХРАНЕНИЕ: Сохраняем результат сразу после каждой комбинации
                 try:
-                    # Обновляем CSV файл
                     current_df = pd.DataFrame(records)
                     current_df.to_csv(results_file, index=False)
-                    print(f"  ✓ Сохранено: {a_name} × {m_name} → {results_file}")
+                    print(f"  ✓ Saved: {a_name} × {m_name} → {results_file}")
                 except Exception as e:
-                    print(f"  ⚠ Ошибка сохранения: {e}")
+                    print(f"  ⚠ Save error: {e}")
                 
-                # АГРЕССИВНАЯ очистка памяти после каждой комбинации
                 try:
                     del clf, X, Xtr, Xva, scaler, best_params, roc_scores, mcc_scores
                     del s, yhat, roc, mcc
@@ -521,14 +497,12 @@ def screen_lgbm_optuna(
                     pass
                 gc.collect()
             
-            # Освобождаем molecule эмбеддинг после всех комбинаций с ним
             try:
                 del Xm
             except:
                 pass
             gc.collect()
         
-        # Освобождаем aptamer эмбеддинг после всех комбинаций с ним
         try:
             del Xa
         except:

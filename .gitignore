@@ -1,0 +1,241 @@
+# AptaBench .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# IPython
+profile_default/
+ipython_config.py
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre
+.pyre/
+
+# pytest
+.pytest_cache/
+
+# Coverage
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask
+instance/
+.webassets-cache
+
+# Scrapy
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# mkdocs
+/site
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+
+# ============================================
+# Project-specific
+# ============================================
+
+# Cached embeddings (large files)
+notebooks/data/embeddings/*.npy
+notebooks/data/embeddings/*.json
+notebooks/data/*.npy
+
+# Model checkpoints (large files)
+notebooks/checkpoints/*.db
+notebooks/notebooks/checkpoints/*.db
+checkpoints/
+*.ckpt
+*.pth
+*.pt
+*.h5
+*.hdf5
+
+# Optuna databases (can be large)
+*.db
+!setup.db  # Exclude setup.db if you have one
+
+# Logs
+*.log
+logs/
+notebooks/logs/
+
+# Large data files (uncomment if you don't want to track them)
+# data/raw/*
+# data/interim/*
+# dataset/*.csv
+# dataset/*.parquet
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Hugging Face cache (very large)
+.cache/
+*.cache/
+transformers_cache/
+
+# PyTorch cache
+torch_extensions/
+
+# Results (optional - uncomment if you don't want to track results)
+# results/*
+# artifacts/metrics/*.csv
+# artifacts/figs/*.png
+
+# Notebook outputs (optional - uncomment to ignore all notebook outputs)
+# *.ipynb
+
+# Specific large folders
+notebooks/triton/
+notebooks/notebooks/notebooks/
+
+# Test outputs
+test_outputs/
+quick_test_checkpoints/
+
+# Editor backups
+*~
+.*.swp
+.*.swo
+
+# Conda
+*.conda
+*.tar.bz2
+
+# Package files
+*.whl
+*.egg
+
+# Compiled files
+*.pyc
+*.pyo
+*.pyd
+
+# C extensions
+*.so
+*.dylib
+*.dll
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+
