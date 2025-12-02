@@ -8,8 +8,8 @@ import warnings
 from pathlib import Path
 from tqdm import tqdm
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import roc_auc_score, matthews_corrcoef
-from lightgbm import LGBMClassifier
+from sklearn.metrics import roc_auc_score, matthews_corrcoef, mean_absolute_error, mean_squared_error, r2_score
+from lightgbm import LGBMClassifier, LGBMRegressor
 import optuna
 
 
@@ -535,4 +535,124 @@ def screen_lgbm_optuna(
             pass
         gc.collect()
 
+    return pd.DataFrame.from_records(records)
+
+
+def screen_lgbm_regression_simple(
+    df,
+    apt_map_full,
+    mol_map_full,
+    split_modes=("stratified", "disjoint_aptamer", "disjoint_molecule"),
+    scale=True,
+    random_state=42,
+    splits_dir="dataset/splits",
+):
+    """
+    Simple regression screening using preloaded embeddings.
+    No hyperparameter optimization - uses sensible defaults.
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Full dataset with pKd_value column.
+    apt_map_full : dict
+        Preloaded aptamer embeddings {name: array} for full dataset.
+    mol_map_full : dict
+        Preloaded molecule embeddings {name: array} for full dataset.
+    
+    Returns
+    -------
+    pandas.DataFrame
+        Results with MAE, RMSE, R² for each encoder combination.
+    """
+    # Get indices of valid pKd samples
+    valid_idx = df["pKd_value"].notna().values
+    n_valid = valid_idx.sum()
+    print(f"Regression dataset: {n_valid} samples with valid pKd (from {len(df)} total)")
+    
+    y = df["pKd_value"].to_numpy()  # Keep full size, filter inside folds
+    
+    # Use full embeddings (will filter inside folds)
+    apt_map = apt_map_full
+    mol_map = mol_map_full
+    
+    # Default LightGBM params (from best classification models)
+    default_params = {
+        'n_estimators': 500,
+        'learning_rate': 0.05,
+        'num_leaves': 96,
+        'max_depth': -1,
+        'subsample': 0.8,
+        'colsample_bytree': 0.8,
+        'reg_lambda': 0.1,
+        'random_state': random_state,
+        'n_jobs': 2,
+        'verbosity': -1,
+    }
+    
+    records = []
+    
+    for split_mode in split_modes:
+        print(f"\n{'='*60}")
+        print(f"Processing: {split_mode}")
+        print(f"{'='*60}")
+        
+        splits = load_splits(split_mode, base_dir=splits_dir)
+        
+        for a_name in tqdm(apt_map.keys(), desc=f"Aptamer encoders"):
+            Xa = apt_map[a_name].astype(np.float32)
+            
+            for m_name in mol_map.keys():
+                Xm = mol_map[m_name].astype(np.float32)
+                
+                # Concatenate
+                X = np.concatenate([Xa, Xm], axis=1).astype(np.float32)
+                
+                # Evaluate on all folds
+                mae_scores, rmse_scores, r2_scores = [], [], []
+                
+                for tr, va in splits:
+                    # Filter to only samples with valid pKd
+                    tr_valid_mask = valid_idx[tr]
+                    va_valid_mask = valid_idx[va]
+                    
+                    tr_valid = tr[tr_valid_mask]
+                    va_valid = va[va_valid_mask]
+                    
+                    Xtr, Xva = X[tr_valid], X[va_valid]
+                    ytr, yva = y[tr_valid], y[va_valid]
+                    
+                    if scale:
+                        scaler = StandardScaler()
+                        Xtr = scaler.fit_transform(Xtr)
+                        Xva = scaler.transform(Xva)
+                    
+                    # Train regressor
+                    reg = LGBMRegressor(**default_params)
+                    with warnings.catch_warnings():
+                        warnings.filterwarnings("ignore")
+                        reg.fit(Xtr, ytr)
+                    
+                    y_pred = reg.predict(Xva)
+                    
+                    mae_scores.append(mean_absolute_error(yva, y_pred))
+                    rmse_scores.append(np.sqrt(mean_squared_error(yva, y_pred)))
+                    r2_scores.append(r2_score(yva, y_pred))
+                
+                records.append({
+                    "split": split_mode,
+                    "aptamer_encoder": a_name,
+                    "molecule_encoder": m_name,
+                    "MAE mean": np.mean(mae_scores),
+                    "MAE std": np.std(mae_scores),
+                    "RMSE mean": np.mean(rmse_scores),
+                    "RMSE std": np.std(rmse_scores),
+                    "R2 mean": np.mean(r2_scores),
+                    "R2 std": np.std(r2_scores),
+                })
+                
+                # Clean up
+                del X
+                gc.collect()
+    
     return pd.DataFrame.from_records(records)
