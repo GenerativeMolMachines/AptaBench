@@ -330,7 +330,7 @@ def cluster_and_plot_tsne_from_combined(
     # --- Custom palette (max 7 sources) ---
     custom_palette = [
         "#344966", "#4DD0E1", "#90A4AE",
-        "#947EE2", "#3B9170", "#4F87FF", "#BA68C8",
+        "#947EE2", "#3B9170", "#4F87FF", "#BA68C8", "#EB7192"
     ]
 
     sources = df[source_col].dropna().unique()
