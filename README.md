@@ -6,7 +6,7 @@ Benchmark for predicting aptamer-small molecule interactions.
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/AptaBench.git
+git clone https://github.com/GenerativeMolMachines/AptaBench.git
 cd AptaBench
 
 # Create environment (conda recommended)
@@ -23,7 +23,6 @@ python test_installation.py
 ## Requirements
 
 - Python >= 3.8
-- 8+ GB RAM
 - GPU optional (for DL models)
 ```
 
