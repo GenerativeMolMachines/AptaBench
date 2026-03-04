@@ -1,0 +1,42 @@
+name: aptabench
+
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+
+  - numpy=1.26
+  - pandas=2.2
+  - scipy
+  - scikit-learn
+  - lightgbm
+
+  - rdkit=2023.09.6
+
+  - pytorch=2.2
+  - torchvision=0.17
+  - pytorch-cuda=11.8
+
+  - matplotlib
+  - seaborn
+  - networkx
+
+  - tqdm
+  - requests
+  - pyyaml
+  - openpyxl
+
+  - ipykernel
+
+  - pip
+  - pip:
+      - transformers
+      - optuna
+      - safetensors
+      - huggingface-hub
+      - python-Levenshtein
+      - torchinfo

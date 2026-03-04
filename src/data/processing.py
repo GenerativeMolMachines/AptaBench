@@ -6,7 +6,14 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 from rdkit import Chem
+import unicodedata
 
+GREEK = {
+    "α": "alpha",
+    "β": "beta",
+    "γ": "gamma",
+    "δ": "delta"
+}
 
 COLUMNS_LIST = ['type', 'sequence', 'canonical_smiles', 'pKd_value', 'label', 'buffer', 'origin', 'source']
 
@@ -406,3 +413,39 @@ def extract_clean_target_name(df, column='label'):
 
     df['target_name'] = df[column].apply(clean_label)
     return df
+
+
+
+
+def normalize_target_name(x):
+
+    if x is None or (isinstance(x, float) and np.isnan(x)):
+        return None
+
+    s = str(x)
+    s = unicodedata.normalize("NFKC", s)
+
+    # greek letters
+    for g, r in GREEK.items():
+        s = s.replace(g, r)
+
+    s = s.strip()
+
+    s = re.sub(r"\([^)]*\)", "", s)
+
+    s = re.split(r"\s*(?:/|,|&|\band\b)\s*", s, flags=re.I)[0]
+
+    s = re.split(r"\.", s)[0]
+
+    s = re.sub(r"\band other.*", "", s, flags=re.I)
+
+    s = re.sub(r"\s+", " ", s).strip()
+
+    s = re.sub(r"[^\w\-\+\(\) ]", " ", s)
+
+    s = re.sub(r"\s+", " ", s).strip()
+
+    if len(s) == 0:
+        return None
+
+    return s

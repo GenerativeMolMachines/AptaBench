@@ -5,9 +5,9 @@ from rdkit import Chem, DataStructs
 from rdkit.Chem import Descriptors, rdFingerprintGenerator as rfg, MACCSkeys
 from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
 from transformers import AutoTokenizer, AutoModel
-from unimol_tools import UniMolRepr
-import clamp
-from mhnreact.molutils import convert_smiles_to_fp
+#from unimol_tools import UniMolRepr
+#import clamp
+#from mhnreact.molutils import convert_smiles_to_fp
 
 
 
@@ -85,7 +85,7 @@ def chemberta_embed(smiles_list, model_name="seyonec/ChemBERTa-zinc-base-v1",
     return np.vstack(out)
 
 
-def unimol_embed(smiles_list, model_name="unimolv1", model_size="84m", return_atomic=True):
+#def unimol_embed(smiles_list, model_name="unimolv1", model_size="84m", return_atomic=True):
     clf = UniMolRepr(data_type='molecule', remove_hs=False,
                      model_name=model_name, model_size=model_size)
     unimol_repr = clf.get_repr(smiles_list, return_atomic_reprs=return_atomic)
@@ -120,8 +120,8 @@ def molformer_embed(smiles_list, model_name="ibm/MoLFormer-XL-both-10pct",
     return np.vstack(out)
 
 
-@torch.no_grad()
-def clamp_embed(smiles_list, batch_size=64, device=None):
+#@torch.no_grad()
+#def clamp_embed(smiles_list, batch_size=64, device=None):
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
     model = clamp.CLAMP(device=device)
