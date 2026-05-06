@@ -1,0 +1,318 @@
+{
+  "@context": {
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "arrayShape": "cr:arrayShape",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "containedIn": "cr:containedIn",
+    "cr": "http://mlcommons.org/croissant/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataBiases": "cr:dataBiases",
+    "dataCollection": "cr:dataCollection",
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isArray": "cr:isArray",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "personalSensitiveInformation": "cr:personalSensitiveInformation",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "isLiveDataset": true,
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "repo",
+      "name": "repo",
+      "description": "The Hugging Face git repository (parquet-backed revision).",
+      "contentUrl": "https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset/tree/refs%2Fconvert%2Fparquet",
+      "encodingFormat": "git+https"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-default",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "default/*/*.parquet"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "default_splits/split_name"
+      },
+      "@id": "default_splits",
+      "name": "default_splits",
+      "description": "Splits for the default config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "default_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "default_splits/split_name": "train"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "default",
+      "description": "aptabench-anonymous/AptaBench_dataset - 'default' subset",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "default/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "default/(?:partial-)?(train)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "default_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/type",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "type"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/sequence",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "sequence"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/canonical_smiles",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "canonical_smiles"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/pKd_value",
+          "dataType": "cr:Float64",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "pKd_value"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/label",
+          "dataType": "cr:Int64",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "label"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/buffer",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "buffer"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/origin",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "origin"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/source",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "source"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
+  "name": "AptaBench_dataset",
+  "description": "AptaBench is a benchmark for aptamer–small-molecule interaction prediction. It contains curated DNA/RNA aptamer–ligand pairs with standardized sequences, canonical SMILES, experimentally grounded active/inactive labels, quantitative affinity values where available, and fixed leakage-aware evaluation splits.\nThis repository is provided for anonymous peer review. Author identities, affiliations, acknowledgements, citation information, and non-anonymous project links… See the full description on the dataset page: https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset.",
+  "alternateName": [
+    "aptabench-anonymous/AptaBench_dataset",
+    "AptaBench"
+  ],
+  "creator": {
+    "@type": "Person",
+    "name": "AptaBench Anonymous",
+    "url": "https://huggingface.co/aptabench-anonymous"
+  },
+  "keywords": [
+    "tabular-classification",
+    "tabular-regression",
+    "English",
+    "cc-by-4.0",
+    "1K - 10K",
+    "csv",
+    "Tabular",
+    "Text",
+    "Datasets",
+    "pandas",
+    "Polars",
+    "Croissant",
+    "aptamers",
+    "small-molecules",
+    "dna",
+    "rna",
+    "molecular-machine-learning",
+    "binding-prediction",
+    "affinity-prediction",
+    "benchmark",
+    "leakage-aware-evaluation"
+  ],
+  "license": "https://choosealicense.com/licenses/cc-by-4.0/",
+  "url": "https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset",
+  "rai:dataLimitations": "AptaBench is a curated benchmark for aptamer–small-molecule interaction prediction and is not a complete database of all known aptamer–ligand interactions. Coverage is limited by the availability, consistency, and reporting quality of experimental measurements in public databases and primary literature. The dataset focuses on DNA/RNA aptamers and small-molecule ligands; it is not designed to represent aptamer–protein, aptamer–cell, antibody, peptide, or general biomolecular binding. It should not be used as evidence of experimental binding without consulting the original source records, and it is not recommended for clinical, diagnostic, therapeutic, regulatory, or safety-critical deployment without independent experimental validation.",
+  "rai:dataBiases": "The dataset may contain selection bias toward aptamers, ligands, assay formats, and experimental conditions that are more frequently reported in the literature and curated databases. Some ligand classes, nucleic-acid types, sequence families, and source datasets may be overrepresented, while negative or low-affinity results may be underreported relative to positive binding observations. Labels may reflect heterogeneity in experimental protocols, buffer conditions, affinity thresholds, and reporting conventions. Disjoint evaluation splits may also introduce distribution shifts in label balance, ligand coverage, and affinity availability.",
+  "rai:personalSensitiveInformation": "The dataset does not contain personal, demographic, medical, human-subject, political, religious, socioeconomic, geographic, cultural, age, gender, or directly identifying information. Records describe biochemical entities, molecular structures, experimental binding labels, affinity values, assay context, and literature or database provenance.",
+  "rai:dataUseCases": "AptaBench is intended to measure model ability to predict aptamer–small-molecule recognition from aptamer sequences and ligand molecular representations. Validated use cases include benchmarking binding classification, affinity regression, multimodal sequence–molecule modeling, and leakage-aware evaluation under stratified, molecule-disjoint, and aptamer-disjoint protocols. The dataset is not validated for clinical decision-making, therapeutic design, diagnostic deployment, experimental replacement, molecule safety assessment, or direct selection of aptamers for real-world use without additional laboratory validation.",
+  "rai:dataSocialImpact": "AptaBench may improve reproducibility and rigor in computational aptamer discovery by providing curated labels, standardized molecular representations, and fixed leakage-aware evaluation protocols. Positive impacts include better assessment of model generalization for biosensing and molecular recognition tasks. Risks include overinterpreting benchmark performance as evidence of real experimental binding, using the dataset outside its small-molecule aptamer scope, or deploying models trained on it without experimental validation. These risks are mitigated by documenting limitations, providing disjoint evaluation splits, preserving source provenance, and explicitly discouraging clinical, diagnostic, therapeutic, or safety-critical use without further validation.",
+  "rai:hasSyntheticData": false,
+  "prov:wasDerivedFrom": [
+    {
+      "@type": "prov:Entity",
+      "prov:label": "Curated aptamer–small-molecule interaction records from public databases and primary literature",
+      "description": "AptaBench integrates experimentally reported active, inactive, low-affinity, and quantitative affinity records from eight curated sources. Source-level provenance is retained in the dataset through the origin and source fields."
+    }
+  ],
+  "prov:wasGeneratedBy": [
+    {
+      "@type": "prov:Activity",
+      "prov:label": "Data collection and curation",
+      "description": "Aptamer–small-molecule interaction records were collected from public databases and primary literature. Records were curated to retain experimentally supported active, inactive, low-affinity, and quantitative affinity observations.",
+      "prov:wasAttributedTo": [
+        {
+          "@type": "prov:Agent",
+          "@id": "anonymous_research_team",
+          "prov:label": "Anonymous research team",
+          "description": "The dataset was collected and curated by the anonymous research team for peer review."
+        }
+      ]
+    },
+    {
+      "@type": "prov:Activity",
+      "prov:label": "Preprocessing and standardization",
+      "description": "Aptamer sequences were standardized, ligands were resolved to canonical molecular representations, duplicate and conflicting records were harmonized, dissociation constants were transformed to pKd values where available, and active/inactive labels were assigned based on experimentally reported observations rather than synthetic random cross-pairing.",
+      "prov:wasAttributedTo": [
+        {
+          "@type": "prov:Agent",
+          "@id": "anonymous_research_team",
+          "prov:label": "Anonymous research team",
+          "description": "The preprocessing and standardization were performed by the anonymous research team."
+        }
+      ]
+    },
+    {
+      "@type": "prov:Activity",
+      "prov:label": "Evaluation split construction",
+      "description": "Fixed 5-fold evaluation protocols were generated for stratified in-distribution, molecule-disjoint, and aptamer-disjoint evaluation. The split files provide train_idx and val_idx row indices referencing the main dataset table.",
+      "prov:wasAttributedTo": [
+        {
+          "@type": "prov:SoftwareAgent",
+          "@id": "make_splits.py",
+          "prov:label": "make_splits.py",
+          "description": "Script used to generate the fixed evaluation splits."
+        }
+      ]
+    }
+  ]
+}

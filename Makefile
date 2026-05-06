@@ -1,7 +1,7 @@
 # Makefile for AptaBench
 # Simplifies common commands
 
-.PHONY: help install install-dev install-full test clean clean-all format lint notebook splits data
+.PHONY: help install install-dev install-full test clean clean-all format lint notebook splits data reproduce-review reviewer-snapshot
 
 # Default target
 help:
@@ -18,6 +18,8 @@ help:
 	@echo "  make notebook        - Launch Jupyter Notebook"
 	@echo "  make splits          - Create train/val splits"
 	@echo "  make data            - Check data availability"
+	@echo "  make reproduce-review - Run quick reviewer reproduction path"
+	@echo "  make reviewer-snapshot - Build clean reviewer snapshot archive"
 	@echo ""
 
 # Installation targets
@@ -38,19 +40,26 @@ install-full: install
 
 # Data preparation
 splits:
-	@echo "📊 Creating train/val splits..."
-	cd dataset && python make_splits.py
+	@echo "Creating train/val splits..."
+	python -m dataset.make_splits
 	@echo "✓ Splits created in dataset/splits/"
 
 data:
 	@echo "📂 Checking data..."
-	@python -c "import pandas as pd; df = pd.read_csv('dataset/AptaBench_dataset_v2.csv'); print(f'✓ Dataset loaded: {len(df)} samples')"
+	@python -c "import pandas as pd; df = pd.read_csv('dataset/AptaBench_dataset.csv'); print(f'✓ Dataset loaded: {len(df)} samples')"
 
 # Development tools
 test:
-	@echo "🧪 Running tests..."
-	@python -c "import sys; print('⚠ Tests not yet configured. Create tests/ directory.')"
-	# pytest tests/ -v
+	@echo "Running tests..."
+	python -m pytest -q
+
+reproduce-review:
+	@echo "Running reviewer reproducibility workflow..."
+	python scripts/reproduce_review.py --quick
+
+reviewer-snapshot:
+	@echo "Creating clean reviewer snapshot..."
+	python scripts/create_reviewer_snapshot.py
 
 format:
 	@echo "🎨 Formatting code..."
@@ -69,31 +78,19 @@ notebook:
 
 # Cleaning
 clean:
-	@echo "🧹 Cleaning temporary files..."
-	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-	find . -type f -name "*.pyc" -delete 2>/dev/null || true
-	find . -type f -name "*.pyo" -delete 2>/dev/null || true
-	find . -type f -name "*.pyd" -delete 2>/dev/null || true
-	find . -type d -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
-	find . -type d -name ".ipynb_checkpoints" -exec rm -rf {} + 2>/dev/null || true
-	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
-	find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
+	@echo "Cleaning temporary files..."
+	python scripts/clean.py
 	@echo "✓ Cleaning complete"
 
 clean-all: clean
-	@echo "🧹 Full cleanup..."
-	rm -rf build/ dist/ *.egg-info
-	rm -rf notebooks/checkpoints/*.db
-	rm -rf notebooks/data/embeddings/*.npy
-	rm -rf checkpoints/
-	rm -rf quick_test_checkpoints/
-	rm -rf .cache/
+	@echo "Full cleanup..."
+	python scripts/clean.py --all
 	@echo "✓ Full cleanup complete"
 
 # Quick test
 quick-test:
 	@echo "⚡ Quick installation test..."
-	@python -c "import numpy as np; import pandas as pd; import torch; import rdkit; import transformers; import lightgbm; import optuna; print('✅ All core libraries working!')"
+	@python test_installation.py
 
 # Docker (if added later)
 # docker-build:

@@ -34,6 +34,7 @@ def _cluster_sequences(seqs, threshold=0.8):
     n = len(seqs)
     adj = [[] for _ in range(n)]
 
+    # Build an undirected similarity graph and extract connected components.
     for i in range(n):
         for j in range(i + 1, n):
             if _seq_identity(seqs[i], seqs[j]) >= threshold:
@@ -63,10 +64,81 @@ def _cluster_sequences(seqs, threshold=0.8):
     return np.array(groups)
 
 
-def _cluster_scaffolds(scaffolds):
-    """Assign cluster_id to each unique scaffold."""
-    uniq = {sc: i for i, sc in enumerate(pd.Series(scaffolds).dropna().unique())}
-    return np.array([uniq.get(sc, -1) for sc in scaffolds])
+def _cluster_scaffolds(scaffolds, *, missing="separate"):
+    """
+    Assign cluster_id to each scaffold.
+
+    Note: returning -1 for missing scaffolds collapses all missing values into a single
+    gigantic group which cannot be split across folds and can severely skew pair counts.
+
+    :param missing:
+        - "together": collapse all missing into one group id (-1) (old behavior)
+        - "separate": give each missing entry its own unique group id (default)
+    """
+    s = pd.Series(scaffolds)
+    uniq = {sc: i for i, sc in enumerate(s.dropna().unique())}
+
+    if missing not in {"together", "separate"}:
+        raise ValueError("missing must be one of: {'together', 'separate'}")
+
+    if missing == "together":
+        return np.array([uniq.get(sc, -1) for sc in scaffolds])
+
+    # missing == "separate": each missing scaffold is its own group id
+    next_id = len(uniq)
+    out = []
+    for sc in scaffolds:
+        if sc in uniq:
+            out.append(uniq[sc])
+        else:
+            out.append(next_id)
+            next_id += 1
+    return np.array(out, dtype=int)
+
+
+def _splits_with_target_test_frac(
+    *,
+    df_len: int,
+    make_splits_fn,
+    target_test_frac: float,
+    frac_tolerance: float,
+    random_state: int,
+    max_tries: int,
+):
+    """
+    Try different seeds until fold test fractions are within tolerance.
+
+    This keeps the core splitter logic intact (disjoint groups + stratification),
+    while preventing pathological fold size imbalance when group sizes are skewed.
+    """
+    if not (0.0 < target_test_frac < 1.0):
+        raise ValueError("target_test_frac must be in (0, 1)")
+    if frac_tolerance < 0:
+        raise ValueError("frac_tolerance must be >= 0")
+    if max_tries < 1:
+        raise ValueError("max_tries must be >= 1")
+
+    rng = np.random.default_rng(random_state)
+    best = None
+    best_max_abs_err = float("inf")
+
+    # Retry with different seeds and keep the closest fold-size profile.
+    for _ in range(max_tries):
+        seed = int(rng.integers(0, np.iinfo(np.int32).max))
+        splits = make_splits_fn(seed)
+
+        test_fracs = [len(va) / df_len for _, va in splits]
+        max_abs_err = max(abs(f - target_test_frac) for f in test_fracs)
+
+        if max_abs_err < best_max_abs_err:
+            best = splits
+            best_max_abs_err = max_abs_err
+
+        if max_abs_err <= frac_tolerance:
+            return splits
+
+    # return best effort (closest we found)
+    return best
 
 
 # ==============================================================
@@ -78,7 +150,10 @@ def stratified_group_splits(
     label_col="label",
     group_cols=("sequence", "canonical_smiles"),
     n_splits=5,
-    random_state=42
+    random_state=42,
+    target_test_frac=None,
+    frac_tolerance=0.02,
+    max_tries=50,
 ):
     """
     Stratified group KFold:
@@ -93,18 +168,28 @@ def stratified_group_splits(
     """
     groups = df[list(group_cols)].astype(str).agg("||".join, axis=1)
 
-    sgkf = StratifiedGroupKFold(
-        n_splits=n_splits, shuffle=True, random_state=random_state
-    )
+    def _make(seed: int):
+        sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=seed)
+        return [
+            (tr, va)
+            for tr, va in sgkf.split(
+                X=np.zeros(len(df)),
+                y=df[label_col].values,
+                groups=groups.values,
+            )
+        ]
 
-    return [
-        (tr, va)
-        for tr, va in sgkf.split(
-            X=np.zeros(len(df)),
-            y=df[label_col].values,
-            groups=groups.values
-        )
-    ]
+    if target_test_frac is None:
+        target_test_frac = 1.0 / n_splits
+
+    return _splits_with_target_test_frac(
+        df_len=len(df),
+        make_splits_fn=_make,
+        target_test_frac=float(target_test_frac),
+        frac_tolerance=float(frac_tolerance),
+        random_state=int(random_state),
+        max_tries=int(max_tries),
+    )
 
 
 
@@ -118,10 +203,14 @@ def disjoint_aptamer_splits(
     col="sequence",
     label_col="label",
     random_state=42,
-    seq_similarity_threshold=0.8
+    seq_similarity_threshold=0.8,
+    target_test_frac=None,
+    frac_tolerance=0.02,
+    max_tries=50,
 ):
     """Sequence groups are sequence-similarity clusters."""
 
+    # Cluster unique sequences first, then map cluster IDs back to each row.
     unique_seqs = df[col].astype(str).drop_duplicates().tolist()
     unique_clusters = _cluster_sequences(unique_seqs)
 
@@ -129,11 +218,30 @@ def disjoint_aptamer_splits(
     seq_to_cluster = {seq: unique_clusters[i] for i, seq in enumerate(unique_seqs)}
     groups = df[col].map(seq_to_cluster).values
 
-    sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=random_state)
+    y = df[label_col].values
 
-    return [(tr, va) for tr, va in sgkf.split(
-        X=np.zeros(len(df)), y=df[label_col].values, groups=groups
-    )]
+    def _make(seed: int):
+        sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=seed)
+        return [
+            (tr, va)
+            for tr, va in sgkf.split(
+                X=np.zeros(len(df)),
+                y=y,
+                groups=groups,
+            )
+        ]
+
+    if target_test_frac is None:
+        target_test_frac = 1.0 / n_splits
+
+    return _splits_with_target_test_frac(
+        df_len=len(df),
+        make_splits_fn=_make,
+        target_test_frac=float(target_test_frac),
+        frac_tolerance=float(frac_tolerance),
+        random_state=int(random_state),
+        max_tries=int(max_tries),
+    )
 
 
 # ==============================================================
@@ -145,16 +253,40 @@ def disjoint_molecule_splits(
     n_splits=5,
     col="canonical_smiles",
     label_col="label",
-    random_state=42
+    random_state=42,
+    scaffold_missing="separate",
+    target_test_frac=None,
+    frac_tolerance=0.02,
+    max_tries=50,
 ):
     """Molecule groups are scaffold clusters."""
 
     smiles = df[col].astype(str).tolist()
+    # Group molecules by Murcko scaffold to enforce chemistry-level disjointness.
     scaffolds = [_get_scaffold(smi) for smi in smiles]
-    groups = _cluster_scaffolds(scaffolds)
+    groups = _cluster_scaffolds(scaffolds, missing=scaffold_missing)
 
-    sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=random_state)
+    y = df[label_col].values
 
-    return [(tr, va) for tr, va in sgkf.split(
-        X=np.zeros(len(df)), y=df[label_col].values, groups=groups
-    )]
+    def _make(seed: int):
+        sgkf = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=seed)
+        return [
+            (tr, va)
+            for tr, va in sgkf.split(
+                X=np.zeros(len(df)),
+                y=y,
+                groups=groups,
+            )
+        ]
+
+    if target_test_frac is None:
+        target_test_frac = 1.0 / n_splits
+
+    return _splits_with_target_test_frac(
+        df_len=len(df),
+        make_splits_fn=_make,
+        target_test_frac=float(target_test_frac),
+        frac_tolerance=float(frac_tolerance),
+        random_state=int(random_state),
+        max_tries=int(max_tries),
+    )

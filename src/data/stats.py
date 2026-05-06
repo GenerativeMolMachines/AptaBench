@@ -75,6 +75,133 @@ def describe_datasets_with_mw_and_logp(dataset_dict):
     return pd.DataFrame(stats)
 
 
+import pandas as pd
+import numpy as np
+
+from rdkit import Chem
+from rdkit.Chem import Descriptors
+from rdkit.Chem.AllChem import GetMorganFingerprintAsBitVect
+from rdkit import DataStructs
+from Levenshtein import distance as levenshtein_distance
+
+
+
+def compute_molecular_weights(smiles_series):
+    return smiles_series.apply(
+        lambda smi: Descriptors.MolWt(Chem.MolFromSmiles(smi)) if Chem.MolFromSmiles(smi) else np.nan
+    )
+
+
+def compute_logp(smiles_series):
+    return smiles_series.apply(
+        lambda smi: Descriptors.MolLogP(Chem.MolFromSmiles(smi)) if Chem.MolFromSmiles(smi) else np.nan
+    )
+
+
+def compute_pairwise_levenshtein(sequences):
+    dists = []
+    for i in range(len(sequences)):
+        for j in range(i + 1, len(sequences)):
+            dists.append(levenshtein_distance(sequences[i], sequences[j]))
+    return dists
+
+
+def compute_tanimoto_similarity(smiles_list):
+
+    mols = [Chem.MolFromSmiles(s) for s in smiles_list if Chem.MolFromSmiles(s)]
+    fps = [GetMorganFingerprintAsBitVect(m, 2, nBits=1024) for m in mols]
+
+    sims = []
+    for i in range(len(fps)):
+        for j in range(i + 1, len(fps)):
+            sims.append(DataStructs.TanimotoSimilarity(fps[i], fps[j]))
+
+    return sims
+
+
+def describe_datasets_with_distributions(dataset_dict):
+
+    summary = []
+    distributions = []
+
+    for name, df in dataset_dict.items():
+
+        df = df.copy()
+
+        aptamers = df["sequence"].dropna()
+        mols = df["canonical_smiles"].dropna()
+        types = df["type"].str.upper()
+
+        if "molecular_weight" not in df.columns:
+            df["molecular_weight"] = compute_molecular_weights(df["canonical_smiles"])
+
+        if "logP" not in df.columns:
+            df["logP"] = compute_logp(df["canonical_smiles"])
+
+        apt_lengths = aptamers.str.len()
+
+        # summary table
+        summary.append({
+            "Dataset": name,
+            "N rows": len(df),
+            "N unique aptamers": aptamers.nunique(),
+            "DNA:RNA ratio": f"{(types=='DNA').sum()}:{(types=='RNA').sum()}",
+            "Mean aptamer length ± std": f"{apt_lengths.mean():.1f} ± {apt_lengths.std():.1f}",
+            "N unique molecules": mols.nunique(),
+            "Mean MW ± std": f"{df['molecular_weight'].mean():.1f} ± {df['molecular_weight'].std():.1f}",
+            "Mean logP ± std": f"{df['logP'].mean():.2f} ± {df['logP'].std():.2f}",
+            "N with pKd": df["pKd_value"].notna().sum(),
+            "Active:Inactive": f"{(df['label']==1).sum()}:{(df['label']==0).sum()}"
+        })
+
+        # distributions for plotting
+
+        for v in apt_lengths:
+            distributions.append({
+                "dataset": name,
+                "feature": "aptamer_length",
+                "value": v
+            })
+
+        for v in df["molecular_weight"].dropna():
+            distributions.append({
+                "dataset": name,
+                "feature": "molecular_weight",
+                "value": v
+            })
+
+        for v in df["logP"].dropna():
+            distributions.append({
+                "dataset": name,
+                "feature": "logP",
+                "value": v
+            })
+
+        # pairwise sequence diversity
+        seq_dists = compute_pairwise_levenshtein(list(aptamers.unique())[:200])
+
+        for v in seq_dists:
+            distributions.append({
+                "dataset": name,
+                "feature": "aptamer_levenshtein",
+                "value": v
+            })
+
+        # molecule diversity
+        mol_sims = compute_tanimoto_similarity(list(mols.unique())[:200])
+
+        for v in mol_sims:
+            distributions.append({
+                "dataset": name,
+                "feature": "molecule_tanimoto",
+                "value": v
+            })
+
+    summary_df = pd.DataFrame(summary)
+    dist_df = pd.DataFrame(distributions)
+
+    return summary_df, dist_df
+
 
 
 def compute_intersections(dataset_dict):

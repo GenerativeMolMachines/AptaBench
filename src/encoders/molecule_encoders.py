@@ -5,11 +5,15 @@ from rdkit import Chem, DataStructs
 from rdkit.Chem import Descriptors, rdFingerprintGenerator as rfg, MACCSkeys
 from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
 from transformers import AutoTokenizer, AutoModel
-#from unimol_tools import UniMolRepr
-#import clamp
-#from mhnreact.molutils import convert_smiles_to_fp
+from unimol_tools import UniMolRepr
+from huggingface_hub import snapshot_download
+import clamp
+from mhnreact.molutils import convert_smiles_to_fp
 
+import os
 
+os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "300"
+os.environ["HF_HUB_ETAG_TIMEOUT"] = "300"
 
 def morgan_fp(smiles_list, n_bits=1024, radius=2, counts=False):
     X = np.zeros((len(smiles_list), n_bits), dtype=np.int32 if counts else np.uint8)
@@ -18,6 +22,7 @@ def morgan_fp(smiles_list, n_bits=1024, radius=2, counts=False):
         mol = Chem.MolFromSmiles(str(smi) if smi else "")
         if mol is None:
             continue
+        # Support either sparse count fingerprints or fixed binary bit-vectors.
         if counts:
             fp = gen.GetCountFingerprint(mol)
             for idx, val in fp.GetNonzeroElements().items():
@@ -57,6 +62,7 @@ def physchem_descriptors(smiles_list):
             X[i] = vals
         except Exception:
             pass
+    # Drop descriptor columns that are undefined for at least one molecule.
     keep = ~np.isnan(X).any(axis=0)
     X = X[:, keep]
     X = np.clip(X, -1e9, 1e9).astype(np.float32, copy=False)
@@ -85,7 +91,7 @@ def chemberta_embed(smiles_list, model_name="seyonec/ChemBERTa-zinc-base-v1",
     return np.vstack(out)
 
 
-#def unimol_embed(smiles_list, model_name="unimolv1", model_size="84m", return_atomic=True):
+def unimol_embed(smiles_list, model_name="unimolv1", model_size="84m", return_atomic=True):
     clf = UniMolRepr(data_type='molecule', remove_hs=False,
                      model_name=model_name, model_size=model_size)
     unimol_repr = clf.get_repr(smiles_list, return_atomic_reprs=return_atomic)
@@ -102,6 +108,7 @@ def molformer_embed(smiles_list, model_name="ibm/MoLFormer-XL-both-10pct",
     model = AutoModel.from_pretrained(model_name,
                                       deterministic_eval=True,
                                       trust_remote_code=True).to(device)
+    # Patch older/custom checkpoints that miss this helper expected by HF internals.
     if not hasattr(model, "warn_if_padding_and_no_attention_mask"):
         def _warn_if_padding_and_no_attention_mask(self, input_ids, attention_mask):
             return
@@ -120,8 +127,8 @@ def molformer_embed(smiles_list, model_name="ibm/MoLFormer-XL-both-10pct",
     return np.vstack(out)
 
 
-#@torch.no_grad()
-#def clamp_embed(smiles_list, batch_size=64, device=None):
+@torch.no_grad()
+def clamp_embed(smiles_list, batch_size=64, device=None):
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
     model = clamp.CLAMP(device=device)
@@ -133,6 +140,7 @@ def molformer_embed(smiles_list, model_name="ibm/MoLFormer-XL-both-10pct",
     for i in range(0, len(smiles_list), batch_size):
         batch = [s if s is not None else "" for s in smiles_list[i:i+batch_size]]
 
+        # Convert SMILES into CLAMP-compatible fixed-size fingerprints.
         fp = convert_smiles_to_fp(
             batch,
             which=model.hparams["compound_mode"],

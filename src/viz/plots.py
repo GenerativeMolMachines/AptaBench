@@ -123,6 +123,204 @@ def describe_datasets_with_mw_and_logp(dataset_dict):
         })
     return pd.DataFrame(stats)
 
+
+
+def plot_dataset_violin_and_diversity(
+    df,
+    figs_dir="figs",
+    filename="dataset_violin_diversity.png"
+):
+
+    import os
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    from rdkit import Chem
+    from rdkit.Chem import Descriptors
+
+    from src.viz.plots import (
+        compute_pairwise_levenshtein,
+        compute_tanimoto_similarity
+    )
+
+    os.makedirs(figs_dir, exist_ok=True)
+
+    sns.set_context("paper", font_scale=2)
+    sns.set_style("whitegrid")
+
+    # Project color palette
+    custom_palette = [
+        "#344966", "#4DD0E1", "#90A4AE",
+        "#947EE2", "#3B9170", "#4F87FF",
+        "#BA68C8", "#EB7192"
+    ]
+
+    datasets = sorted(df["source"].unique())
+    palette_map = dict(zip(datasets, custom_palette[:len(datasets)]))
+
+    # ---------------------------------------------------
+    # Data
+    # ---------------------------------------------------
+
+    length_df = pd.DataFrame({
+        "dataset": df["source"],
+        "length": df["sequence"].str.len()
+    })
+
+    mw = df["canonical_smiles"].apply(
+        lambda s: Descriptors.MolWt(Chem.MolFromSmiles(s))
+        if Chem.MolFromSmiles(s) else np.nan
+    )
+
+    mw_df = pd.DataFrame({
+        "dataset": df["source"],
+        "mw": mw
+    })
+
+    seqs = df["sequence"].dropna().unique()
+    lev_vals = compute_pairwise_levenshtein(list(seqs))
+
+    smiles = df["canonical_smiles"].dropna().unique()
+    tanimoto_vals = compute_tanimoto_similarity(list(smiles))
+
+    # ---------------------------------------------------
+    # Figure
+    # ---------------------------------------------------
+
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+    # ---------------------------------------------------
+    # A — aptamer length
+    # ---------------------------------------------------
+
+    sns.violinplot(
+        data=length_df,
+        x="dataset",
+        y="length",
+        palette=palette_map,
+        inner=None,
+        linewidth=1.1,
+        saturation=0.5,
+        ax=axes[0,0]
+    )
+
+    sns.boxplot(
+        data=length_df,
+        x="dataset",
+        y="length",
+        width=0.12,
+        showfliers=False,
+        boxprops={'facecolor':'#F2F2F2','alpha':0.9,'zorder':3},
+        medianprops={'color':'#344966','linewidth':2},
+        whiskerprops={'linewidth':1.3},
+        capprops={'linewidth':1.3},
+        ax=axes[0,0]
+    )
+
+    axes[0,0].set_title("Aptamer length per dataset")
+    axes[0,0].set_xlabel("")
+    axes[0,0].set_ylabel("Length (nt)")
+    axes[0,0].tick_params(axis="x", rotation=45)
+
+    # ---------------------------------------------------
+    # B — molecular weight
+    # ---------------------------------------------------
+
+    sns.violinplot(
+        data=mw_df,
+        x="dataset",
+        y="mw",
+        palette=palette_map,
+        inner=None,
+        linewidth=1.1,
+        saturation=0.5,
+        ax=axes[0,1]
+    )
+
+    sns.boxplot(
+        data=mw_df,
+        x="dataset",
+        y="mw",
+        width=0.12,
+        showfliers=False,
+        boxprops={'facecolor':'#F2F2F2','alpha':0.9,'zorder':3},
+        medianprops={'color':'#344966','linewidth':2},
+        whiskerprops={'linewidth':1.3},
+        capprops={'linewidth':1.3},
+        ax=axes[0,1]
+    )
+
+    axes[0,1].set_title("Molecular weight per dataset")
+    axes[0,1].set_xlabel("")
+    axes[0,1].set_ylabel("MW (Da)")
+    axes[0,1].tick_params(axis="x", rotation=45)
+
+    # ---------------------------------------------------
+    # C — Tanimoto similarity
+    # ---------------------------------------------------
+
+    sns.histplot(
+        tanimoto_vals,
+        bins=40,
+        kde=True,
+        color="#344966",
+        alpha=0.7,
+        ax=axes[1,0]
+    )
+
+    axes[1,0].set_xlim(0, 0.5)
+    axes[1,0].set_title("Molecule similarity (Tanimoto)")
+    axes[1,0].set_xlabel("Similarity")
+    axes[1,0].set_ylabel("Count")
+
+    # ---------------------------------------------------
+    # D — Levenshtein
+    # ---------------------------------------------------
+
+    sns.histplot(
+        lev_vals,
+        bins=40,
+        kde=True,
+        color="#344966",
+        alpha=0.7,
+        ax=axes[1,1]
+    )
+
+    axes[1,1].set_title("Sequence diversity (Levenshtein)")
+    axes[1,1].set_xlabel("Distance")
+    axes[1,1].set_ylabel("Count")
+
+    # ---------------------------------------------------
+    # Panel labels + style
+    # ---------------------------------------------------
+
+    labels = ["A", "B", "C", "D"]
+
+    for ax, label in zip(axes.flatten(), labels):
+
+        ax.text(
+            -0.16,
+            1.08,
+            label,
+            transform=ax.transAxes,
+            fontsize=22,
+            fontweight="bold",
+            alpha=0.85
+        )
+
+        ax.spines['top'].set_color("#90A4AE")
+        ax.spines['right'].set_color("#90A4AE")
+
+    plt.tight_layout()
+
+    out_path = os.path.join(figs_dir, filename)
+
+    plt.savefig(out_path, dpi=1200, bbox_inches="tight")
+
+    plt.show()
+
 # ============================================================
 # Distribution plots
 # ============================================================

@@ -1,9 +1,0 @@
-2025-11-28 12:54:07,690 - INFO - ================================================================================
-2025-11-28 12:54:07,690 - INFO - Starting LightGBM screening with Optuna optimization
-2025-11-28 12:54:07,690 - INFO - Metric: roc_auc, n_trials: 10, random_state: 42
-2025-11-28 12:54:07,691 - INFO - Split modes: ('stratified', 'disjoint_molecule', 'disjoint_aptamer')
-2025-11-28 12:54:07,691 - INFO - Aptamer encoders: ['OneHot', 'Kmer3', 'Kmer4', 'GENA', 'DNABERT2']
-2025-11-28 12:54:07,691 - INFO - Molecule encoders: ['MorganFP', 'MACCS', 'PhysChem', 'ChemBERTa', 'UniMol', 'MolFormer', 'CLAMP']
-2025-11-28 12:54:07,691 - INFO - ================================================================================
-2025-11-28 12:54:07,695 - INFO - Created output file: results\lgbm_results_online.csv
-2025-11-28 12:54:07,696 - INFO - Precomputing features...

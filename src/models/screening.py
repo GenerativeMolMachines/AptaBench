@@ -16,11 +16,12 @@ import optuna
 def _compute_dataset_hash(df):
     """Compute hash of dataset for cache validation."""
     # Use shape, first few rows, and column names for hash
+    # Fast hash surrogate for cache invalidation between dataset revisions.
     data_str = f"{df.shape}_{df.iloc[:5].to_json()}_{list(df.columns)}"
     return hashlib.md5(data_str.encode()).hexdigest()
 
 
-def _get_embedding_cache_dir(embeddings_dir="notebooks/data/embeddings"):
+def _get_embedding_cache_dir(embeddings_dir="artifacts/cache/embeddings"):
     """Get or create embeddings cache directory."""
     cache_dir = Path(embeddings_dir)
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -36,7 +37,7 @@ def precompute_and_save_embeddings(
     df,
     apt_cfgs,
     mol_cfgs,
-    embeddings_dir="notebooks/data/embeddings",
+    embeddings_dir="artifacts/cache/embeddings",
     force_recompute=False,
 ):
     """
@@ -74,6 +75,7 @@ def precompute_and_save_embeddings(
     print(f"Cache directory: {cache_dir}")
     
     # Check if metadata exists and load if not force_recompute
+    # Reuse cached embeddings when metadata matches current dataset hash.
     if metadata_file.exists() and not force_recompute:
         with open(metadata_file, 'r') as f:
             metadata = json.load(f)
@@ -141,7 +143,7 @@ def load_embeddings(
     df,
     apt_cfgs,
     mol_cfgs,
-    embeddings_dir="notebooks/data/embeddings",
+    embeddings_dir="artifacts/cache/embeddings",
 ):
     """
     Load precomputed embeddings from cache.
@@ -235,9 +237,9 @@ def screen_lgbm_optuna(
     random_state=42,
     splits_dir="dataset/splits",
     use_cached_embeddings=True,
-    embeddings_dir="notebooks/data/embeddings",
+    embeddings_dir="artifacts/cache/embeddings",
     force_recompute_embeddings=False,
-    checkpoint_dir="notebooks/checkpoints",
+    checkpoint_dir="artifacts/ml/classification/checkpoints",
     results_file=None,
     resume=True,
     use_pruning=True
@@ -432,6 +434,7 @@ def screen_lgbm_optuna(
                     )
                     n_completed = 0
                 
+                # Resume partially completed studies instead of restarting optimization.
                 remaining_trials = max(0, n_trials - n_completed)
                 if remaining_trials > 0:
                     study.optimize(

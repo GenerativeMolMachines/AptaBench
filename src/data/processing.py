@@ -121,6 +121,7 @@ def process_binding_constants(df, column='kd_raw', unit='Kd'):
             return np.nan
 
         # Extract all "number + unit" pairs
+        # Accept both single values and ranges like "10-20 nM".
         match = re.search(r"(\d+(?:\.\d+)?(?:[-–]\d+(?:\.\d+)?)?)\s*(pm|nm|µm|um|mm|nM|uM|µM|mM|μM)", value)
         if not match:
             return np.nan
@@ -172,6 +173,7 @@ def process_binding_constants(df, column='kd_raw', unit='Kd'):
 
     # Generate label
     def assign_label(row):
+        # Conservative rule: explicit "inactive" or weak affinity (pKd <= 4) -> negative.
         val = str(row[column]).lower()
         if 'inactive' in val:
             return 0
@@ -265,6 +267,7 @@ def resolve_smiles_by_name(df, name_column='name', output_column='canonical_smil
 
     # Build a dictionary name -> SMILES
     name_to_smiles = {}
+    # Query unique names once and map back to all rows.
     for name in tqdm(unique_names, desc="Querying PubChem"):
         smiles = fetch_smiles(name)
         name_to_smiles[name] = smiles
@@ -321,6 +324,7 @@ def resolve_smiles_by_name_or_pubchem_id(
 
     # Dictionary {ID: SMILES}
     id_to_smiles = {}
+    # Batch over unique identifiers to avoid duplicate network requests.
     for identifier in tqdm(unique_ids, desc=f"Querying PubChem by {identifier_type}"):
         smiles = fetch_smiles(identifier)
         id_to_smiles[identifier] = smiles
