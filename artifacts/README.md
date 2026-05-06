@@ -9,7 +9,6 @@ Use this folder to inspect reproducibility artifacts.
 - `artifacts/ml/`: classical ML outputs (screening/regression).
 - `artifacts/dl/`: deep learning outputs (screening/ablations/regression).
 - `artifacts/figures/`: generated figures.
-- `archive/`: legacy files that are not required for the main reproduction path.
 
 ## Paper mapping (primary files)
 

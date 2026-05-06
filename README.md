@@ -71,7 +71,6 @@ AptaBench/
 ├── src/               # Library code (import as `src.*`)
 ├── artifacts/         # Canonical experiment outputs (ML, DL, figures, cache)
 ├── envs/              # Extra conda stubs (e.g. CLAMP)
-├── archive/           # Legacy notebook exports (not required to reproduce HF data)
 └── environment.yml    # Same as canonical conda spec
 ```
 
