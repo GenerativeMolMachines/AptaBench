@@ -63,6 +63,7 @@ notebooks/data/*.npy
 *.ckpt
 *.pth
 *.pt
+!notebooks/data/models/clamp_clip/checkpoint.pt
 *.h5
 *.hdf5
 *.db
