@@ -2,16 +2,13 @@
 
 Benchmark for predicting aptamer–small molecule interactions.
 
-You are viewing the **anonymous double-blind review** version of this project (NeurIPS Datasets & Benchmarks / similar tracks). During the blind-review period, identifying metadata (author names, affiliations, acknowledgements, and non-anonymous repository URLs) is intentionally omitted.
-
 ## Dataset (hosted)
 
 The released tabular benchmark is on Hugging Face:
 
 - [https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset](https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset)
 
-**Croissant metadata (core + RAI):** [dataset/croissant.json](dataset/croissant.json).  
-The OpenReview supplement includes the same file (or the Hugging Face-exported equivalent with completed RAI fields), in line with submission requirements.
+**Croissant metadata (core + RAI):** [dataset/croissant.json](dataset/croissant.json).
 
 Load in Python:
 
@@ -22,15 +19,6 @@ ds = load_dataset("aptabench-anonymous/AptaBench_dataset", split="train")
 ```
 
 For exact reproducibility, use the dataset revision pinned in the paper supplement (Hugging Face commit hash).
-
-## Code access (anonymous)
-
-For anonymous review, you can access the code via **one** of the following:
-
-1. A **private anonymous Git repository** URL provided through the conference / OpenReview process (without identifying organization or repository names), or  
-2. An **anonymous `.zip`** of this codebase uploaded as supplementary material.
-
-During the double-blind period, no public repository with author-identifying information is linked.
 
 ## Quickstart
 
