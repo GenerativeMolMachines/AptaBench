@@ -2,7 +2,7 @@
 
 Benchmark for predicting aptamer–small molecule interactions.
 
-This tree is prepared for **anonymous double-blind review** (NeurIPS Datasets & Benchmarks / similar tracks). During the blind-review period, identifying metadata (author names, affiliations, acknowledgements, and non-anonymous repository URLs) is intentionally omitted.
+You are viewing the **anonymous double-blind review** version of this project (NeurIPS Datasets & Benchmarks / similar tracks). During the blind-review period, identifying metadata (author names, affiliations, acknowledgements, and non-anonymous repository URLs) is intentionally omitted.
 
 ## Dataset (hosted)
 
@@ -11,7 +11,7 @@ The released tabular benchmark is on Hugging Face:
 - [https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset](https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset)
 
 **Croissant metadata (core + RAI):** [dataset/croissant.json](dataset/croissant.json).  
-The OpenReview supplement includes this same file (or the Hugging Face-exported equivalent with completed RAI fields), in line with submission requirements.
+The OpenReview supplement includes the same file (or the Hugging Face-exported equivalent with completed RAI fields), in line with submission requirements.
 
 Load in Python:
 
@@ -21,21 +21,21 @@ from datasets import load_dataset
 ds = load_dataset("aptabench-anonymous/AptaBench_dataset", split="train")
 ```
 
-For exact reproducibility, the paper supplement pins a specific dataset revision (Hugging Face commit hash).
+For exact reproducibility, use the dataset revision pinned in the paper supplement (Hugging Face commit hash).
 
 ## Code access (anonymous)
 
-For anonymous review, code is provided via **one** of the following:
+For anonymous review, you can access the code via **one** of the following:
 
 1. A **private anonymous Git repository** URL provided through the conference / OpenReview process (without identifying organization or repository names), or  
 2. An **anonymous `.zip`** of this codebase uploaded as supplementary material.
 
-During the double-blind period, no public repository identifying the authors is linked.
+During the double-blind period, no public repository with author-identifying information is linked.
 
-## Reviewer Quickstart
+## Quickstart
 
 ```bash
-# 0) From repository root
+# 0) From the repository root
 cd AptaBench
 
 # 1) Canonical environment (single source of truth)
@@ -51,16 +51,16 @@ python test_installation.py
 # 4) Minimal health-check
 python -m pytest -q
 
-# 5) One-command reviewer reproduction (splits + key notebooks + output checks)
+# 5) One-command quick reproduction (splits + key notebooks + output checks)
 python scripts/reproduce_review.py --quick
 # or
 make reproduce-review
 ```
 
-Secondary installation files:
+Additional installation files:
 - `requirements.txt`: pip export for non-conda workflows (secondary).
 - `envs/aptabench.yml`: compatibility mirror for previous setups (secondary).
-- `environment.yml`: canonical file for reproducing reviewer results.
+- `environment.yml`: canonical file for reproducing the results.
 
 ### Optional encoders (heavy)
 
@@ -79,7 +79,7 @@ pip install -e src/clamp
 | Python | 3.10.4 | Pinned in `environment.yml` |
 | OS | Linux / macOS / Windows | `Makefile` commands are cross-platform via Python scripts |
 | CUDA | Optional (12.4 build in canonical env) | Needed only for GPU acceleration |
-| GPU | Optional | DL notebook runs faster on GPU, not required for quick review |
+| GPU | Optional | DL notebook runs faster on GPU, not required for quick reproduction |
 | Network | Required for smoke check | `test_installation.py` fetches a small dataset split |
 
 Pinned core versions for reproducibility (`environment.yml`): `numpy==2.2.6`, `torch==2.6.0+cu124`, `torchvision==0.21.0+cu124`, `rdkit==2025.9.6`.
@@ -151,7 +151,7 @@ After `python scripts/reproduce_review.py --quick`, verify these files exist:
 - `artifacts/figures/dataset/dataset_distributions.png`
 - `artifacts/figures/dataset/split_strategies.png`
 
-For paper-specific mapping, see `REPRODUCE.md`. For artifact taxonomy, see `artifacts/README.md`.
+For paper-specific mapping, see `REPRODUCE.md`. For artifact layout, see `artifacts/README.md`.
 
 ## License
 

@@ -1,6 +1,6 @@
 # Artifacts Map
 
-This folder is organized for reviewer-facing reproducibility.
+Use this folder to inspect reproducibility artifacts.
 
 ## Directory roles
 
@@ -9,7 +9,7 @@ This folder is organized for reviewer-facing reproducibility.
 - `artifacts/ml/`: classical ML outputs (screening/regression).
 - `artifacts/dl/`: deep learning outputs (screening/ablations/regression).
 - `artifacts/figures/`: generated figures.
-- `archive/`: legacy files that are not required for the main reviewer path.
+- `archive/`: legacy files that are not required for the main reproduction path.
 
 ## Paper mapping (primary files)
 

@@ -1,6 +1,6 @@
 # Reproduce Paper Claims
 
-This file maps each paper-facing table/figure to the notebook and output artifact.
+Use this file to map each paper-facing table/figure to the notebook that generates it and the output artifact you should verify.
 
 | Claim/Table/Figure | Notebook | Output file |
 |---|---|---|
@@ -15,9 +15,9 @@ This file maps each paper-facing table/figure to the notebook and output artifac
 | DL leaderboard | `notebooks/04_dl_model.ipynb` | `artifacts/dl/screening/dl_leaderboard.csv` |
 | DL ablation table | `notebooks/04_dl_model.ipynb` | `artifacts/dl/ablations/ablation_study_gena_unimol.csv` |
 
-## Recommended reviewer flow
+## Recommended flow
 
 1. `python test_installation.py`
 2. `python -m pytest -q`
 3. `python scripts/reproduce_review.py --quick`
-4. Compare generated outputs with the table above.
+4. Compare your generated outputs with the table above.
