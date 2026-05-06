@@ -10,16 +10,6 @@ The released tabular benchmark is on Hugging Face:
 
 **Croissant metadata (core + RAI):** [dataset/croissant.json](dataset/croissant.json).
 
-Load in Python:
-
-```python
-from datasets import load_dataset
-
-ds = load_dataset("aptabench-anonymous/AptaBench_dataset", split="train")
-```
-
-For exact reproducibility, use the dataset revision pinned in the paper supplement (Hugging Face commit hash).
-
 ## Quickstart
 
 ```bash
