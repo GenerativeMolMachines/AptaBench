@@ -1,0 +1,15 @@
+split_mode: disjoint_molecule
+n_seeds: 2
+verdict: inconclusive_or_not_better
+
+Primary metric (PR-AUC):
+- curated_mean: 0.8196
+- shuffled_mean: 0.5637
+- mean_diff: 0.2559
+- p_value: 0.500000
+- ci95: [0.2005, 0.3113]
+
+Sanity highlights:
+- mean_negative_type_roc_auc: 0.9579
+- mean_curated_easy_frac: 0.2787
+- mean_shuffled_easy_frac: 0.1028

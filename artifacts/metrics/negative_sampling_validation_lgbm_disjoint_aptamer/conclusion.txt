@@ -1,0 +1,15 @@
+split_mode: disjoint_aptamer
+n_seeds: 8
+verdict: curated_better
+
+Primary metric (PR-AUC):
+- curated_mean: 0.8460
+- shuffled_mean: 0.6555
+- mean_diff: 0.1906
+- p_value: 0.007812
+- ci95: [0.0397, 0.3567]
+
+Sanity highlights:
+- mean_negative_type_roc_auc: 0.9584
+- mean_curated_easy_frac: 0.2377
+- mean_shuffled_easy_frac: 0.1173
