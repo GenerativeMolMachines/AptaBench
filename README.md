@@ -2,7 +2,7 @@
 
 Benchmark for predicting aptamer–small molecule interactions.
 
-This tree is prepared for **anonymous double-blind review** (NeurIPS Datasets & Benchmarks / similar tracks). Do not add author names, affiliations, acknowledgements, or non-anonymous repository URLs to this branch before de-anonymization.
+This tree is prepared for **anonymous double-blind review** (NeurIPS Datasets & Benchmarks / similar tracks). During the blind-review period, identifying metadata (author names, affiliations, acknowledgements, and non-anonymous repository URLs) is intentionally omitted.
 
 ## Dataset (hosted)
 
@@ -10,7 +10,8 @@ The released tabular benchmark is on Hugging Face:
 
 - [https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset](https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset)
 
-**Croissant metadata (core + RAI):** [dataset/croissant.json](dataset/croissant.json) — attach the same file (or the HF-exported equivalent with RAI fields completed) to your OpenReview submission as required.
+**Croissant metadata (core + RAI):** [dataset/croissant.json](dataset/croissant.json).  
+The OpenReview supplement includes this same file (or the Hugging Face-exported equivalent with completed RAI fields), in line with submission requirements.
 
 Load in Python:
 
@@ -20,16 +21,16 @@ from datasets import load_dataset
 ds = load_dataset("aptabench-anonymous/AptaBench_dataset", split="train")
 ```
 
-Pin a dataset revision in the paper supplement (HF commit hash) for exact reproducibility.
+For exact reproducibility, the paper supplement pins a specific dataset revision (Hugging Face commit hash).
 
 ## Code access (anonymous)
 
-Reviewers should receive **either**:
+For anonymous review, code is provided via **one** of the following:
 
-1. A **private anonymous Git repository** URL provided by the conference / OpenReview (no identifying organization in the org or repo name), or  
+1. A **private anonymous Git repository** URL provided through the conference / OpenReview process (without identifying organization or repository names), or  
 2. An **anonymous `.zip`** of this codebase uploaded as supplementary material.
 
-Do **not** link to a public repository that identifies the authors until the de-anonymization period.
+During the double-blind period, no public repository identifying the authors is linked.
 
 ## Reviewer Quickstart
 
