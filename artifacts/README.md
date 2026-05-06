@@ -9,7 +9,7 @@ Use this folder to inspect reproducibility artifacts.
 - `artifacts/ml/`: classical ML outputs (screening/regression).
 - `artifacts/dl/`: deep learning outputs (screening/ablations/regression).
 - `artifacts/figures/`: generated figures.
-- `artifacts/metrics/`: supplementary analyses (e.g. curated vs shuffled negatives under `negative_sampling_validation_lgbm_*`; see `manuscript_experiment_description.md` in the disjoint-molecule folder). Regenerate: `scripts/validate_negative_sampling.py`.
+- `artifacts/metrics/`: supplementary analyses (e.g. curated vs shuffled negatives under `negative_sampling_validation_lgbm_*`). Regenerate: `scripts/validate_negative_sampling.py`.
 
 ## Paper mapping (primary files)
 
