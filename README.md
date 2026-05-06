@@ -132,4 +132,4 @@ For paper-specific mapping, see `REPRODUCE.md`. For artifact layout, see `artifa
 
 ## License
 
-Source code in this repository is licensed under the MIT License — see [LICENSE](LICENSE). The **dataset** on Hugging Face is distributed under **CC BY 4.0** as stated on the dataset card (code license ≠ data license).
+Source code in this repository is licensed under the MIT License — see [LICENSE](LICENSE). The **dataset** on Hugging Face is distributed under **CC BY 4.0** as stated on the dataset card.
