@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="AptaBench logo" width="480"/>
+</p>
+
 # AptaBench: A Benchmark for Aptamer–Small Molecule Binding
 
 [![Paper](https://img.shields.io/badge/NeurIPS%202026-Evaluations%20%26%20Datasets-blue)](https://neurips.cc/virtual/2026/poster/139036)
