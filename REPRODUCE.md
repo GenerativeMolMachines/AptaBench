@@ -4,10 +4,12 @@ Use this file to map each paper-facing table to the notebook that generates it a
 
 For a short summary of rebuttal analyses, see [REBUTTAL_RESULTS.md](REBUTTAL_RESULTS.md).
 
-| Claim/Table | Notebook | Output file |
+| Claim/Table | Notebook / script | Output file |
 |---|---|---|
 | Unified benchmark dataset | `notebooks/01_dataset_construction.ipynb` | `dataset/AptaBench_dataset.csv` |
 | Dataset split definitions | `dataset/make_splits.py` | `dataset/splits/stratified.json` |
+| Dataset / split figures | `notebooks/02_data_exploration.ipynb` | generated under `artifacts/figures/dataset/` (not committed) |
+| ML screening heatmaps | `scripts/plot_screening_heatmaps.py` | generated under `artifacts/figures/ml/` (not committed) |
 | ML screening table | `notebooks/03_ml_benchmark.ipynb` | `artifacts/ml/classification/screening/all_splits/results.csv` |
 | ML regression table | `notebooks/03_ml_benchmark.ipynb` | `artifacts/ml/regression/results_reg.csv` |
 | DL screening summary | `notebooks/04_dl_model.ipynb` | `artifacts/dl/screening/comprehensive_screening_all_splits.csv` |

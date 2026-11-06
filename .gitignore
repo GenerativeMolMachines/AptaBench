@@ -90,9 +90,13 @@ artifacts/additional_experiments/**/e5_row_annotations.csv
 artifacts/additional_experiments/**/e9_test_molecule_max_similarity.csv
 artifacts/additional_experiments/**/diagnose_*.py
 
-# Generated figures (keep only result tables in git; logo is tracked)
+# Generated figures / local run artifacts (tables stay tracked; logo stays)
 artifacts/figures/
+artifacts/histories/
+artifacts/optuna/
+artifacts/metrics/
 notebooks/figs/
+notebooks/results/
 **/*.png
 !assets/logo.png
 **/*.jpg

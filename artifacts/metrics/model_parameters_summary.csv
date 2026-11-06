@@ -1,5 +1,0 @@
-Model,Total Parameters,Trainable Parameters,Non-trainable Parameters,Total (raw),Trainable (raw)
-CrossAttentionModel,8.94M,8.94M,0,8936193,8936193
-TwoTowerMLP,4.68M,4.68M,0,4676737,4676737
-MultiTaskModel,3.83M,3.83M,0,3827074,3827074
-PretrainedEncoderModel,2.08M,2.08M,0,2077569,2077569

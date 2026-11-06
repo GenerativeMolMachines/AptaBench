@@ -15,7 +15,6 @@ from matplotlib.patches import Rectangle
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCREENING_DIR = REPO_ROOT / "artifacts" / "ml" / "classification" / "screening"
 OUT_DIR = REPO_ROOT / "artifacts" / "figures" / "ml"
-DOWNLOADS_DIR = Path.home() / "Downloads"
 
 SPLIT_FILES = {
     "molecule_disjoint": (
@@ -165,10 +164,6 @@ def main() -> None:
         out_path = OUT_DIR / out_name
         plot_heatmap(pivot, title, out_path)
         print(f"Wrote {out_path}")
-
-        downloads_path = DOWNLOADS_DIR / out_name
-        plot_heatmap(pivot, title, downloads_path)
-        print(f"Wrote {downloads_path}")
 
 
 if __name__ == "__main__":
