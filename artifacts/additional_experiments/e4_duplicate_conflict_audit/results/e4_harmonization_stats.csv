@@ -1,0 +1,3 @@
+stage,n_rows,n_unique_canonical_pairs,n_repeat_pair_groups,n_cross_source_pair_groups,n_conflicting_label_groups,n_multi_pkd_measurement_groups,n_multi_pkd_unique_value_groups,n_pkd_range_le_0_5,n_pkd_range_gt_0_5_le_1_0,n_pkd_range_gt_1_0
+pre_global_harmonization,6910,6527,305,197,36,138,109,54,22,33
+post_global_harmonization,6289,6052,208,128,23,100,100,48,19,33

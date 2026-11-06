@@ -1,14 +1,12 @@
 import types
+from pathlib import Path
+
 import numpy as np
 import torch
 from rdkit import Chem, DataStructs
 from rdkit.Chem import Descriptors, rdFingerprintGenerator as rfg, MACCSkeys
 from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
 from transformers import AutoTokenizer, AutoModel
-from unimol_tools import UniMolRepr
-from huggingface_hub import snapshot_download
-import clamp
-from mhnreact.molutils import convert_smiles_to_fp
 
 import os
 
@@ -92,6 +90,8 @@ def chemberta_embed(smiles_list, model_name="seyonec/ChemBERTa-zinc-base-v1",
 
 
 def unimol_embed(smiles_list, model_name="unimolv1", model_size="84m", return_atomic=True):
+    from unimol_tools import UniMolRepr
+
     clf = UniMolRepr(data_type='molecule', remove_hs=False,
                      model_name=model_name, model_size=model_size)
     unimol_repr = clf.get_repr(smiles_list, return_atomic_reprs=return_atomic)
@@ -102,10 +102,14 @@ def unimol_embed(smiles_list, model_name="unimolv1", model_size="84m", return_at
 
 @torch.no_grad()
 def molformer_embed(smiles_list, model_name="ibm/MoLFormer-XL-both-10pct",
+                    revision="7b12d946c181a37f6012b9dc3b002275de070314",
                     max_len=512, batch_size=32, device=None):
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name, revision=revision, trust_remote_code=True
+    )
     model = AutoModel.from_pretrained(model_name,
+                                      revision=revision,
                                       deterministic_eval=True,
                                       trust_remote_code=True).to(device)
     # Patch older/custom checkpoints that miss this helper expected by HF internals.
@@ -128,10 +132,22 @@ def molformer_embed(smiles_list, model_name="ibm/MoLFormer-XL-both-10pct",
 
 
 @torch.no_grad()
-def clamp_embed(smiles_list, batch_size=64, device=None):
-    device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+def clamp_embed(smiles_list, batch_size=64, device=None, model_dir=None):
+    import clamp
+    from mhnreact.molutils import convert_smiles_to_fp
 
-    model = clamp.CLAMP(device=device)
+    device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+    if model_dir is None:
+        vendored = (
+            Path(__file__).resolve().parents[2]
+            / "notebooks"
+            / "data"
+            / "models"
+            / "clamp_clip"
+        )
+        model_dir = vendored if vendored.exists() else Path("data/models/clamp_clip")
+
+    model = clamp.CLAMP(path_dir=str(model_dir), device=device)
     model.to(device)
     model.eval()
 

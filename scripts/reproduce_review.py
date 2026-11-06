@@ -31,7 +31,7 @@ EXPECTED_SPLITS = [
 
 EXPECTED_QUICK_OUTPUTS = [
     REPO_ROOT / "artifacts" / "ml" / "classification" / "screening" / "all_splits" / "results.csv",
-    REPO_ROOT / "artifacts" / "ml" / "regression" / "results.csv",
+    REPO_ROOT / "artifacts" / "ml" / "regression" / "results_reg.csv",
     REPO_ROOT / "artifacts" / "figures" / "dataset" / "dataset_distributions.png",
     REPO_ROOT / "artifacts" / "figures" / "dataset" / "split_strategies.png",
 ]

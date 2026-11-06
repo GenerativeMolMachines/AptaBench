@@ -42,11 +42,13 @@ dependencies = [
 viz = ["matplotlib>=3.5", "seaborn>=0.12"]
 notebooks = ["jupyter", "ipykernel", "nbconvert>=6.4"]
 dev = ["black", "flake8", "pytest"]
+rna = ["rna-fm"]
 full = [
     "unimol-tools",
     "clamp-bio",
     "mhnreact",
     "torchinfo",
+    "rna-fm",
 ]
 
 [tool.setuptools]

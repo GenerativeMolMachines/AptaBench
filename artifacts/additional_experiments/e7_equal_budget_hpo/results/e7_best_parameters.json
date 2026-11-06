@@ -1,0 +1,128 @@
+{
+  "e7_cls_stratified_twotowermlp": {
+    "direction": "MAXIMIZE",
+    "value": 0.9447108240974499,
+    "params": {
+      "learning_rate": 0.0027051668818999287,
+      "weight_decay": 0.0007510418138777543,
+      "dropout": 0.4757995766256756,
+      "hidden_dim": 256,
+      "n_layers": 1,
+      "batch_size": 256
+    },
+    "completed_trials": 15
+  },
+  "e7_cls_stratified_cnndualencoder": {
+    "direction": "MAXIMIZE",
+    "value": 0.9445675317965784,
+    "params": {
+      "learning_rate": 0.0009176376279177978,
+      "weight_decay": 3.7041050990628628e-06,
+      "dropout": 0.10301892772651738,
+      "hidden_dim": 256,
+      "n_layers": 2,
+      "batch_size": 128,
+      "seq_len": 16,
+      "kernel_size": 7
+    },
+    "completed_trials": 15
+  },
+  "e7_cls_stratified_crossattention": {
+    "direction": "MAXIMIZE",
+    "value": 0.9443311572703069,
+    "params": {
+      "learning_rate": 0.00010890023742276608,
+      "weight_decay": 6.586252373799882e-06,
+      "dropout": 0.10301892772651738,
+      "hidden_dim": 256,
+      "n_layers": 3,
+      "batch_size": 256,
+      "n_heads": 2
+    },
+    "completed_trials": 15
+  },
+  "e7_cls_disjoint_molecule_twotowermlp": {
+    "direction": "MAXIMIZE",
+    "value": 0.8452604551751309,
+    "params": {
+      "learning_rate": 0.0013826083091896758,
+      "weight_decay": 9.853225172032548e-07,
+      "dropout": 0.10220884684944097,
+      "hidden_dim": 64,
+      "n_layers": 3,
+      "batch_size": 128
+    },
+    "completed_trials": 15
+  },
+  "e7_cls_disjoint_molecule_cnndualencoder": {
+    "direction": "MAXIMIZE",
+    "value": 0.8430796183582658,
+    "params": {
+      "learning_rate": 0.0013811007646509924,
+      "weight_decay": 0.00024674351486658264,
+      "dropout": 0.2038440458639349,
+      "hidden_dim": 256,
+      "n_layers": 2,
+      "batch_size": 128,
+      "seq_len": 32,
+      "kernel_size": 7
+    },
+    "completed_trials": 15
+  },
+  "e7_cls_disjoint_molecule_crossattention": {
+    "direction": "MAXIMIZE",
+    "value": 0.8347284241692575,
+    "params": {
+      "learning_rate": 0.0006726152492222722,
+      "weight_decay": 6.313404343324575e-06,
+      "dropout": 0.42253494308975476,
+      "hidden_dim": 256,
+      "n_layers": 3,
+      "batch_size": 64,
+      "n_heads": 4
+    },
+    "completed_trials": 15
+  },
+  "e7_cls_disjoint_aptamer_twotowermlp": {
+    "direction": "MAXIMIZE",
+    "value": 0.8281757209594326,
+    "params": {
+      "learning_rate": 0.002823738441702491,
+      "weight_decay": 9.16778585931984e-06,
+      "dropout": 0.1989218058950338,
+      "hidden_dim": 256,
+      "n_layers": 2,
+      "batch_size": 256
+    },
+    "completed_trials": 15
+  },
+  "e7_cls_disjoint_aptamer_cnndualencoder": {
+    "direction": "MAXIMIZE",
+    "value": 0.8460028561643145,
+    "params": {
+      "learning_rate": 0.0011366390141299642,
+      "weight_decay": 2.7642326709084325e-06,
+      "dropout": 0.1824452237418681,
+      "hidden_dim": 256,
+      "n_layers": 2,
+      "batch_size": 128,
+      "seq_len": 16,
+      "kernel_size": 7
+    },
+    "completed_trials": 15
+  },
+  "e7_cls_disjoint_aptamer_crossattention": {
+    "direction": "MAXIMIZE",
+    "value": 0.8344031613131192,
+    "params": {
+      "learning_rate": 0.0013766695500451195,
+      "weight_decay": 0.00021688426869252188,
+      "dropout": 0.10116692975959529,
+      "hidden_dim": 256,
+      "n_layers": 2,
+      "batch_size": 128,
+      "n_heads": 8
+    },
+    "completed_trials": 15
+  }
+}

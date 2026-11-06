@@ -1,0 +1,132 @@
+{
+  "experiment": "E6 RNA-native baselines",
+  "dataset": "C:\\Users\\m19er\\AptaBench\\dataset\\AptaBench_dataset.csv",
+  "dataset_sha256": "24c25fd7b514ff9b86bf14c415abb1888071a2e91a566af498659b96f5885e44",
+  "subsets": {
+    "classification": 1568,
+    "regression": 1280
+  },
+  "subset_fingerprints": {
+    "regression": "a1b1bd1724868265"
+  },
+  "tasks": [
+    "regression"
+  ],
+  "split_modes": [
+    "stratified",
+    "disjoint_aptamer",
+    "disjoint_molecule"
+  ],
+  "aptamer_encoders": [
+    "Kmer4",
+    "DNABERT2",
+    "RNA-FM",
+    "RiNALMo-Mega"
+  ],
+  "encoder_families": {
+    "Kmer4": "dna_style",
+    "DNABERT2": "dna_style",
+    "RNA-FM": "rna_native",
+    "RiNALMo-Mega": "rna_native"
+  },
+  "comparison": {
+    "shared_subset": "RNA-only (type==RNA); regression further requires pKd",
+    "shared_molecule_encoder": "MorganFP for classification and regression",
+    "dna_style_encoders": "Kmer4, DNABERT2 (U->T)",
+    "rna_native_encoders": "RNA-FM, RiNALMo-Mega (U preserved)"
+  },
+  "molecule_encoders": {
+    "regression": "MorganFP"
+  },
+  "model_provenance": {
+    "RNA-FM": {
+      "package": "rna-fm",
+      "import": "fm",
+      "loader": "fm.pretrained.rna_fm_t12",
+      "weights": "cuhkaih/rnafm:RNA-FM_pretrained.pth",
+      "repr_layer": 12,
+      "family": "rna_native"
+    },
+    "RiNALMo-Mega": {
+      "package": "rinalmo",
+      "source": "https://github.com/lbcb-sci/RiNALMo",
+      "model_name": "mega-v1",
+      "config": "mega",
+      "weights": "https://zenodo.org/records/15043668/files/rinalmo_mega_pretrained.pt",
+      "use_flash_attn": false,
+      "family": "rna_native"
+    },
+    "DNABERT2": {
+      "model_id": "zhihan1996/DNABERT-2-117M",
+      "alphabet": "U->T",
+      "family": "dna_style"
+    },
+    "Kmer4": {
+      "alphabet": "U->T",
+      "family": "dna_style"
+    },
+    "MorganFP": {
+      "bits": 1024,
+      "radius": 2
+    }
+  },
+  "embedding_cache": {
+    "Kmer4": {
+      "path": "C:\\Users\\m19er\\AptaBench\\artifacts\\cache\\e6_embeddings\\kmer4_858c7fb33d829b46.npy",
+      "cache_key": "858c7fb33d829b46",
+      "shape": [
+        1568,
+        257
+      ]
+    },
+    "DNABERT2": {
+      "path": "C:\\Users\\m19er\\AptaBench\\artifacts\\cache\\e6_embeddings\\dnabert2_289c9e9796754d6e.npy",
+      "cache_key": "289c9e9796754d6e",
+      "shape": [
+        1568,
+        769
+      ]
+    },
+    "RNA-FM": {
+      "path": "C:\\Users\\m19er\\AptaBench\\artifacts\\cache\\e6_embeddings\\rna_fm_86ec78e1171b1cd4.npy",
+      "cache_key": "86ec78e1171b1cd4",
+      "shape": [
+        1568,
+        640
+      ]
+    },
+    "RiNALMo-Mega": {
+      "path": "C:\\Users\\m19er\\AptaBench\\artifacts\\cache\\e6_embeddings\\rinalmo_mega_e4e87c6c467b1530.npy",
+      "cache_key": "e4e87c6c467b1530",
+      "shape": [
+        1568,
+        640
+      ]
+    },
+    "MorganFP": {
+      "path": "C:\\Users\\m19er\\AptaBench\\artifacts\\cache\\e6_embeddings\\morganfp_51c212484c703554.npy",
+      "cache_key": "51c212484c703554",
+      "shape": [
+        1568,
+        1024
+      ]
+    }
+  },
+  "n_splits": 5,
+  "n_trials_per_task_split_encoder": 20,
+  "random_state": 42,
+  "classification_optimization": "ROC-AUC (maximize)",
+  "regression_optimization": "RMSE (minimize)",
+  "u_to_t_conversion_for_rna_native_encoders": false,
+  "raw_results": "C:\\Users\\m19er\\AptaBench\\artifacts\\additional_experiments\\e6_rna_native_baselines\\results\\e6_rna_native_raw_results.csv",
+  "package_versions": {
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "lightgbm": "4.4.0",
+    "optuna": "4.7.0",
+    "torch": "2.4.1",
+    "rna-fm": "0.2.2",
+    "rinalmo": "1.0.0",
+    "fm": "0.2.2"
+  }
+}

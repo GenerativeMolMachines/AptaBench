@@ -55,7 +55,7 @@
       "@id": "repo",
       "name": "repo",
       "description": "The Hugging Face git repository (parquet-backed revision).",
-      "contentUrl": "https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset/tree/refs%2Fconvert%2Fparquet",
+      "contentUrl": "https://huggingface.co/datasets/GenerativeMolMachines/AptaBench_dataset/tree/refs%2Fconvert%2Fparquet",
       "encodingFormat": "git+https"
     },
     {
@@ -94,7 +94,7 @@
     {
       "@type": "cr:RecordSet",
       "@id": "default",
-      "description": "aptabench-anonymous/AptaBench_dataset - 'default' subset",
+      "description": "GenerativeMolMachines/AptaBench_dataset - 'default' subset",
       "field": [
         {
           "@type": "cr:Field",
@@ -226,15 +226,15 @@
   ],
   "conformsTo": "http://mlcommons.org/croissant/1.1",
   "name": "AptaBench_dataset",
-  "description": "AptaBench is a benchmark for aptamer–small-molecule interaction prediction. It contains curated DNA/RNA aptamer–ligand pairs with standardized sequences, canonical SMILES, experimentally grounded active/inactive labels, quantitative affinity values where available, and fixed leakage-aware evaluation splits.\nThis repository is provided for anonymous peer review. Author identities, affiliations, acknowledgements, citation information, and non-anonymous project links… See the full description on the dataset page: https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset.",
+  "description": "AptaBench is a benchmark for aptamer–small-molecule interaction prediction. It contains curated DNA/RNA aptamer–ligand pairs with standardized sequences, canonical SMILES, experimentally grounded active/inactive labels, quantitative affinity values where available, and fixed leakage-aware evaluation splits.\nAuthors: Mariia Eremeyeva, Nikita Serov. NeurIPS 2026 Evaluations and Datasets Track. See the full description on the dataset page: https://huggingface.co/datasets/GenerativeMolMachines/AptaBench_dataset.",
   "alternateName": [
-    "aptabench-anonymous/AptaBench_dataset",
+    "GenerativeMolMachines/AptaBench_dataset",
     "AptaBench"
   ],
   "creator": {
     "@type": "Person",
-    "name": "AptaBench Anonymous",
-    "url": "https://huggingface.co/aptabench-anonymous"
+    "name": "Mariia Eremeyeva, Nikita Serov",
+    "url": "https://huggingface.co/GenerativeMolMachines"
   },
   "keywords": [
     "tabular-classification",
@@ -260,7 +260,7 @@
     "leakage-aware-evaluation"
   ],
   "license": "https://choosealicense.com/licenses/cc-by-4.0/",
-  "url": "https://huggingface.co/datasets/aptabench-anonymous/AptaBench_dataset",
+  "url": "https://huggingface.co/datasets/GenerativeMolMachines/AptaBench_dataset",
   "rai:dataLimitations": "AptaBench is a curated benchmark for aptamer–small-molecule interaction prediction and is not a complete database of all known aptamer–ligand interactions. Coverage is limited by the availability, consistency, and reporting quality of experimental measurements in public databases and primary literature. The dataset focuses on DNA/RNA aptamers and small-molecule ligands; it is not designed to represent aptamer–protein, aptamer–cell, antibody, peptide, or general biomolecular binding. It should not be used as evidence of experimental binding without consulting the original source records, and it is not recommended for clinical, diagnostic, therapeutic, regulatory, or safety-critical deployment without independent experimental validation.",
   "rai:dataBiases": "The dataset may contain selection bias toward aptamers, ligands, assay formats, and experimental conditions that are more frequently reported in the literature and curated databases. Some ligand classes, nucleic-acid types, sequence families, and source datasets may be overrepresented, while negative or low-affinity results may be underreported relative to positive binding observations. Labels may reflect heterogeneity in experimental protocols, buffer conditions, affinity thresholds, and reporting conventions. Disjoint evaluation splits may also introduce distribution shifts in label balance, ligand coverage, and affinity availability.",
   "rai:personalSensitiveInformation": "The dataset does not contain personal, demographic, medical, human-subject, political, religious, socioeconomic, geographic, cultural, age, gender, or directly identifying information. Records describe biochemical entities, molecular structures, experimental binding labels, affinity values, assay context, and literature or database provenance.",
@@ -282,9 +282,9 @@
       "prov:wasAttributedTo": [
         {
           "@type": "prov:Agent",
-          "@id": "anonymous_research_team",
-          "prov:label": "Anonymous research team",
-          "description": "The dataset was collected and curated by the anonymous research team for peer review."
+          "@id": "aptabench_authors_collection",
+          "prov:label": "Mariia Eremeyeva, Nikita Serov",
+          "description": "The dataset was collected and curated by the AptaBench authors."
         }
       ]
     },
@@ -295,9 +295,9 @@
       "prov:wasAttributedTo": [
         {
           "@type": "prov:Agent",
-          "@id": "anonymous_research_team",
-          "prov:label": "Anonymous research team",
-          "description": "The preprocessing and standardization were performed by the anonymous research team."
+          "@id": "aptabench_authors",
+          "prov:label": "Mariia Eremeyeva, Nikita Serov",
+          "description": "The preprocessing and standardization were performed by the AptaBench authors."
         }
       ]
     },

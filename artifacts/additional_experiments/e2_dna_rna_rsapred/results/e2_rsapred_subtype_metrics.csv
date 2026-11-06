@@ -1,0 +1,19 @@
+split,split_label,category,n,active,inactive,status,min_per_class,aggregation,roc_auc,pr_auc,mcc
+disjoint_aptamer,Aptamer-disjoint,aptamer,468,412,56,reported,20,pooled_oof,0.7420683079056866,0.9383734808387085,0.30284137556109086
+disjoint_aptamer,Aptamer-disjoint,miRNA,102,85,17,insufficient_class_support,20,pooled_oof,,,
+disjoint_aptamer,Aptamer-disjoint,repeat,60,56,4,insufficient_class_support,20,pooled_oof,,,
+disjoint_aptamer,Aptamer-disjoint,ribosomal RNA,236,128,108,reported,20,pooled_oof,0.7704716435185184,0.7976017526239889,0.07138933953978123
+disjoint_aptamer,Aptamer-disjoint,riboswitch,64,62,2,insufficient_class_support,20,pooled_oof,,,
+disjoint_aptamer,Aptamer-disjoint,viral RNA,211,168,43,reported,20,pooled_oof,0.867109634551495,0.9578682229925923,0.1884937212354869
+disjoint_molecule,Molecule-disjoint,aptamer,468,412,56,reported,20,pooled_oof,0.732749653259362,0.9535592309908121,0.11178804548903569
+disjoint_molecule,Molecule-disjoint,miRNA,102,85,17,insufficient_class_support,20,pooled_oof,,,
+disjoint_molecule,Molecule-disjoint,repeat,60,56,4,insufficient_class_support,20,pooled_oof,,,
+disjoint_molecule,Molecule-disjoint,ribosomal RNA,236,128,108,reported,20,pooled_oof,0.8901909722222223,0.9097254016960142,0.6268599360967045
+disjoint_molecule,Molecule-disjoint,riboswitch,64,62,2,insufficient_class_support,20,pooled_oof,,,
+disjoint_molecule,Molecule-disjoint,viral RNA,211,168,43,reported,20,pooled_oof,0.926218161683278,0.9656457408250451,0.7258399101451597
+stratified,In-distribution,aptamer,468,412,56,reported,20,pooled_oof,0.9112777392510403,0.9864685866901863,0.5333008982116099
+stratified,In-distribution,miRNA,102,85,17,insufficient_class_support,20,pooled_oof,,,
+stratified,In-distribution,repeat,60,56,4,insufficient_class_support,20,pooled_oof,,,
+stratified,In-distribution,ribosomal RNA,236,128,108,reported,20,pooled_oof,0.9313512731481481,0.9379843125139177,0.7280619878045075
+stratified,In-distribution,riboswitch,64,62,2,insufficient_class_support,20,pooled_oof,,,
+stratified,In-distribution,viral RNA,211,168,43,reported,20,pooled_oof,0.9505813953488372,0.9851461777690754,0.7865599684739208

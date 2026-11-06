@@ -1,0 +1,85 @@
+{
+  "experiment": "E7 equal-budget DL and regression HPO",
+  "reviewer": "gXd3 W2/Q6",
+  "dataset": "dataset\\AptaBench_dataset.csv",
+  "dataset_sha256": "24c25fd7b514ff9b86bf14c415abb1888071a2e91a566af498659b96f5885e44",
+  "n_rows": 6289,
+  "split_sha256": {
+    "stratified": "a91c5ad5241824d6decf204e6fce78fac5456b712ca5d7b40a6f2249779fcf25",
+    "disjoint_molecule": "49f8f0e0cea3307c0815c5c72329ff1fa8cfc70a524c9ea2b621277911febda7",
+    "disjoint_aptamer": "b9eb7d6a32f600e74eff976a3cb8b82621b019f23f871180f64ca5cb3b5c1423"
+  },
+  "regression_leaderboard": "artifacts\\additional_experiments\\e7_equal_budget_hpo\\inputs\\regression_leaderboard.csv",
+  "regression_leaderboard_sha256": "ab85635f7dcbdfac4805d595a554a4b034171d18bb9ade0aa8b29aa5b108a990",
+  "seed": 42,
+  "classification": {
+    "features": [
+      "OneHot",
+      "MorganFP"
+    ],
+    "models": [
+      "TwoTowerMLP",
+      "CNNDualEncoder",
+      "CrossAttention"
+    ],
+    "trials_per_model_split": 15,
+    "search_folds": [
+      0,
+      1,
+      2
+    ],
+    "final_folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "objective": "mean validation ROC-AUC",
+    "max_epochs": 80,
+    "patience": 10,
+    "multitask_included": false
+  },
+  "regression": {
+    "selection": "three lowest baseline RMSE mean per split",
+    "trials_per_encoder_split": 20,
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "objective": "mean validation RMSE",
+    "model": "LightGBMRegressor"
+  },
+  "timing": "wall-clock seconds; Search compute sums Optuna trial durations; Final compute sums five-fold refit seconds",
+  "device": "cuda",
+  "hardware": {
+    "platform": "Windows-10-10.0.26100-SP0",
+    "processor": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
+    "cuda_device": "NVIDIA GeForce GTX 1060 6GB"
+  },
+  "python": "3.10.4 (tags/v3.10.4:9d38120, Mar 23 2022, 23:13:41) [MSC v.1929 64 bit (AMD64)]",
+  "package_versions": {
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "lightgbm": "3.3.5",
+    "optuna": "4.8.0",
+    "torch": "2.6.0+cu124",
+    "rdkit": "2025.9.6"
+  },
+  "studies": {
+    "e7_cls_stratified_twotowermlp": 15,
+    "e7_cls_stratified_cnndualencoder": 15,
+    "e7_cls_stratified_crossattention": 15,
+    "e7_cls_disjoint_molecule_twotowermlp": 15,
+    "e7_cls_disjoint_molecule_cnndualencoder": 15,
+    "e7_cls_disjoint_molecule_crossattention": 15,
+    "e7_cls_disjoint_aptamer_twotowermlp": 15,
+    "e7_cls_disjoint_aptamer_cnndualencoder": 15,
+    "e7_cls_disjoint_aptamer_crossattention": 15
+  },
+  "total_wall_seconds": 704.5181015999988
+}

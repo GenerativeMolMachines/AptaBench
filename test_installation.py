@@ -16,7 +16,7 @@ def main() -> int:
 
     from datasets import load_dataset
 
-    ds = load_dataset("aptabench-anonymous/AptaBench_dataset", split="train")
+    ds = load_dataset("GenerativeMolMachines/AptaBench_dataset", split="train")
     assert len(ds) > 0
     row = ds[0]
     assert "sequence" in row and "canonical_smiles" in row

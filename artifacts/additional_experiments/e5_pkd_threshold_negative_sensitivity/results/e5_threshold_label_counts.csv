@@ -1,0 +1,4 @@
+threshold,n_negatives,n_positives,n_low_affinity_negatives,n_explicit_nonbinding,n_other_reported_inactive
+3,2858,3431,95,39,2724
+4,3049,3240,286,39,2724
+5,3339,2950,576,39,2724
