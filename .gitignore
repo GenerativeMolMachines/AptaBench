@@ -90,6 +90,16 @@ artifacts/additional_experiments/**/e5_row_annotations.csv
 artifacts/additional_experiments/**/e9_test_molecule_max_similarity.csv
 artifacts/additional_experiments/**/diagnose_*.py
 
+# Generated figures (keep only result tables in git; logo is tracked)
+artifacts/figures/
+notebooks/figs/
+**/*.png
+!assets/logo.png
+**/*.jpg
+**/*.jpeg
+**/*.svg
+**/*.gif
+
 # Temp
 tmp/
 temp/

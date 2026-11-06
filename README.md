@@ -141,8 +141,8 @@ Paper LightGBM baselines (best per protocol): classification ROC-AUC **0.95 / 0.
 | `dataset/` | Released table, split JSONs, Croissant metadata |
 | `notebooks/` | Construction, exploration, ML/DL baselines |
 | `src/` | Data utilities, encoders, screening helpers |
-| `artifacts/` | Published baseline tables and figures |
-| `REPRODUCE.md` | Map from paper tables/figures to notebooks |
+| `artifacts/` | Published baseline result tables |
+| `REPRODUCE.md` | Map from paper tables to notebooks |
 | `REBUTTAL_RESULTS.md` | Short summary of follow-up analyses |
 
 Notebooks: `01` build the dataset · `02` explore · `03` classical ML · `04` deep models.
