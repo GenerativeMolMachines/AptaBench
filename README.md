@@ -19,7 +19,7 @@ AptaBench is a curated, standardized, and leakage-aware benchmark for predicting
 | Dataset (Hugging Face) | https://huggingface.co/datasets/GenerativeMolMachines/AptaBench_dataset |
 | Croissant metadata | [dataset/croissant.json](dataset/croissant.json) |
 | Reproduce paper tables/figures | [REPRODUCE.md](REPRODUCE.md) |
-| Rebuttal / supplementary experiments | [REBUTTAL_RESULTS.md](REBUTTAL_RESULTS.md) |
+| Rebuttal results (summary) | [REBUTTAL_RESULTS.md](REBUTTAL_RESULTS.md) |
 
 ## Citation
 
@@ -118,7 +118,7 @@ AptaBench/
 │   └── additional_experiments/      # E1–E9 rebuttal runners and raw results
 ├── data/                            # Raw and interim source tables used for construction
 ├── REPRODUCE.md                     # Paper claim → notebook/artifact map
-├── REBUTTAL_RESULTS.md              # Rebuttal experiment headlines and reproduce commands
+├── REBUTTAL_RESULTS.md              # Short summary of rebuttal analyses
 └── environment.yml                  # Canonical conda environment
 ```
 
@@ -129,7 +129,7 @@ Canonical paper outputs:
 - `artifacts/dl/screening/` — DL screening and leaderboard
 - `artifacts/dl/ablations/` — DL ablation results
 - `artifacts/figures/` — figures used in the paper
-- `artifacts/additional_experiments/` — self-contained rebuttal experiments (see [REBUTTAL_RESULTS.md](REBUTTAL_RESULTS.md))
+- `artifacts/additional_experiments/` — self-contained rebuttal experiments
 
 ## Notebooks
 
@@ -150,7 +150,7 @@ After `python scripts/reproduce_review.py --quick`, verify:
 - `artifacts/figures/dataset/dataset_distributions.png`
 - `artifacts/figures/dataset/split_strategies.png`
 
-Paper claim mapping: [REPRODUCE.md](REPRODUCE.md). Rebuttal experiments: [REBUTTAL_RESULTS.md](REBUTTAL_RESULTS.md). Artifact layout: [artifacts/README.md](artifacts/README.md).
+Paper claim mapping: [REPRODUCE.md](REPRODUCE.md). Rebuttal summary: [REBUTTAL_RESULTS.md](REBUTTAL_RESULTS.md). Artifact layout: [artifacts/README.md](artifacts/README.md).
 
 ## License
 

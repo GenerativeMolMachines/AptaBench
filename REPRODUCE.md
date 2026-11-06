@@ -2,7 +2,7 @@
 
 Use this file to map each paper-facing table/figure to the notebook that generates it and the output artifact you should verify.
 
-For **rebuttal / supplementary experiment headlines** (E1–E9), see [REBUTTAL_RESULTS.md](REBUTTAL_RESULTS.md).
+For a short summary of rebuttal analyses, see [REBUTTAL_RESULTS.md](REBUTTAL_RESULTS.md).
 
 | Claim/Table/Figure | Notebook | Output file |
 |---|---|---|

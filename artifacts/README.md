@@ -32,4 +32,4 @@ Use this folder to inspect reproducibility artifacts.
 | E8 within-assay ranking | `artifacts/additional_experiments/e8_within_assay_ranking/results/e8_summary.csv` |
 | E9 pharmacophore similarity diagnostic | `artifacts/additional_experiments/e9_pharmacophore_similarity_diagnostic/results/e9_fold_similarity_summary.csv` |
 
-See `REPRODUCE.md` for detailed notebook-to-output mapping and `REBUTTAL_RESULTS.md` for rebuttal headlines and reproduce commands.
+See `REPRODUCE.md` for detailed notebook-to-output mapping and `REBUTTAL_RESULTS.md` for a short rebuttal summary.
