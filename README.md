@@ -6,7 +6,6 @@
 
 **Mariia Eremeyeva, Nikita Serov**
 
-Published: 25 Sept 2026 · Last Modified: 25 Sept 2026  
 **NeurIPS 2026 Evaluations and Datasets Track** (poster)
 
 AptaBench is a curated, standardized, and leakage-aware benchmark for predicting aptamer–small-molecule binding. It integrates eight sources into **6,289** interaction pairs covering **1,610** DNA/RNA aptamers and **942** ligands, with experimentally reported actives/inactives, optional pKd affinities, and fixed in-distribution, molecule-disjoint, and aptamer-disjoint evaluation protocols.
