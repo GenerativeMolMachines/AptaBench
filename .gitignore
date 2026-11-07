@@ -75,7 +75,6 @@ artifacts/additional_experiments/**/*.log
 artifacts/additional_experiments/**/*.err
 artifacts/additional_experiments/**/studies/
 artifacts/additional_experiments/**/e7_run_env.ps1
-artifacts/metrics/e7/
 
 # Regenerable / bulky rebuttal intermediates (runners recreate these)
 artifacts/additional_experiments/**/splits/
@@ -94,7 +93,11 @@ artifacts/additional_experiments/**/diagnose_*.py
 artifacts/figures/
 artifacts/histories/
 artifacts/optuna/
-artifacts/metrics/
+artifacts/metrics/**
+!artifacts/metrics/
+!artifacts/metrics/comprehensive_screening_stratified.csv
+!artifacts/metrics/comprehensive_screening_disjoint_molecule.csv
+!artifacts/metrics/comprehensive_screening_disjoint_aptamer.csv
 notebooks/figs/
 notebooks/results/
 **/*.png
