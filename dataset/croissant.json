@@ -226,16 +226,29 @@
   ],
   "conformsTo": "http://mlcommons.org/croissant/1.1",
   "name": "AptaBench_dataset",
-  "description": "AptaBench is a benchmark for aptamer–small-molecule interaction prediction. It contains curated DNA/RNA aptamer–ligand pairs with standardized sequences, canonical SMILES, experimentally grounded active/inactive labels, quantitative affinity values where available, and fixed leakage-aware evaluation splits.\nAuthors: Mariia Eremeyeva, Nikita Serov. NeurIPS 2026 Evaluations and Datasets Track. See the full description on the dataset page: https://huggingface.co/datasets/GenerativeMolMachines/AptaBench_dataset.",
+  "description": "AptaBench is a benchmark for aptamer–small-molecule interaction prediction. It contains curated DNA/RNA aptamer–ligand pairs with standardized sequences, canonical SMILES, experimentally grounded active/inactive labels, quantitative affinity values where available, and fixed leakage-aware evaluation splits.\nAuthors: Mariia Eremeyeva, Nikita Serov. NeurIPS 2026 Evaluations and Datasets Track. See the full description on the dataset page: https://huggingface.co/datasets/GenerativeMolMachines/AptaBench_dataset. The Hugging Face train split contains the complete benchmark table; the three five-fold evaluation protocols are released as separate JSON index files in the public GitHub repository.",
   "alternateName": [
     "GenerativeMolMachines/AptaBench_dataset",
     "AptaBench"
   ],
-  "creator": {
-    "@type": "Person",
-    "name": "Mariia Eremeyeva, Nikita Serov",
-    "url": "https://huggingface.co/GenerativeMolMachines"
-  },
+  "creator": [
+    {
+      "@type": "sc:Person",
+      "name": "Mariia Eremeyeva",
+      "affiliation": {
+        "@type": "sc:Organization",
+        "name": "ITMO University"
+      }
+    },
+    {
+      "@type": "sc:Person",
+      "name": "Nikita Serov",
+      "affiliation": {
+        "@type": "sc:Organization",
+        "name": "ITMO University"
+      }
+    }
+  ],
   "keywords": [
     "tabular-classification",
     "tabular-regression",
@@ -270,8 +283,43 @@
   "prov:wasDerivedFrom": [
     {
       "@type": "prov:Entity",
-      "prov:label": "Curated aptamer–small-molecule interaction records from public databases and primary literature",
-      "description": "AptaBench integrates experimentally reported active, inactive, low-affinity, and quantitative affinity records from eight curated sources. Source-level provenance is retained in the dataset through the origin and source fields."
+      "@id": "https://doi.org/10.1093/bib/bbae002",
+      "prov:label": "RSAPred (source publication)"
+    },
+    {
+      "@type": "prov:Entity",
+      "@id": "https://doi.org/10.1093/database/bas006",
+      "prov:label": "AptamerBase (source publication)"
+    },
+    {
+      "@type": "prov:Entity",
+      "@id": "https://www.aptagen.com/apta-index/",
+      "prov:label": "AptaGen Apta-Index"
+    },
+    {
+      "@type": "prov:Entity",
+      "@id": "https://doi.org/10.1093/nar/gkad959",
+      "prov:label": "UTexas Aptamer Database (source publication)"
+    },
+    {
+      "@type": "prov:Entity",
+      "@id": "https://doi.org/10.1093/nar/gkaf1016",
+      "prov:label": "RiboCentre-aptamer (source publication)"
+    },
+    {
+      "@type": "prov:Entity",
+      "@id": "https://doi.org/10.1261/rna.079784.123",
+      "prov:label": "AptaDB (source publication)"
+    },
+    {
+      "@type": "prov:Entity",
+      "@id": "https://doi.org/10.1093/nar/gkaf219",
+      "prov:label": "Experimental specificity dataset (source publication)"
+    },
+    {
+      "@type": "prov:Entity",
+      "prov:label": "Manually curated primary literature",
+      "description": "Individual publication citations and provenance are retained in source and origin fields."
     }
   ],
   "prov:wasGeneratedBy": [
